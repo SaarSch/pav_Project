@@ -1,3 +1,4 @@
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
 import jminor.JmStore;
@@ -27,6 +28,20 @@ public class PexynLogger {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}
+	}
+
+	public static void end(String fileName){
+
+		PrintWriter writer;
+		try {
+			String res = PexynLogger.getString();
+			System.out.println(res);
+			writer = new PrintWriter(fileName + ".spec", "UTF-8");
+			writer.println(res);
+			writer.close();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
