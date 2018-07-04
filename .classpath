@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre-10.0.1">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="pexyn.jar"/>
+	<classpathentry kind="lib" path="sootclasses-trunk-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="Util.jar"/>
+	<classpathentry kind="lib" path="ST-4.0.8.jar"/>
+	<classpathentry kind="lib" path="trove-3.0.0a1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
