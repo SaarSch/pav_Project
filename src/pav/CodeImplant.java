@@ -3,9 +3,7 @@ package pav;
 import javafx.util.Pair;
 import soot.*;
 import soot.javaToJimple.LocalGenerator;
-import soot.jimple.AssignStmt;
-import soot.jimple.InstanceFieldRef;
-import soot.jimple.Jimple;
+import soot.jimple.*;
 import soot.util.Chain;
 import soot.util.HashChain;
 
@@ -51,12 +49,15 @@ public class CodeImplant extends BodyTransformer {
         AssignStmt stmt = Jimple.v().newAssignStmt(env, Jimple.v().newNewExpr(envClass.getType()));
         units.insertBefore(stmt, units.getFirst());
 
-        // add 'env.xxx = xxx;' after each line of code:
         List<Pair<List<Unit>, Unit>> newStatements = new LinkedList<>();
         for (Unit unit : units) {
-            // add 'PexynLogger.logCmd();'
-
             List<Unit> toInsert = new LinkedList<>();
+
+            // add 'PexynLogger.logCmd();'
+            InvokeExpr invokeLogCmd = Jimple.v().newStaticInvokeExpr(logCmd.makeRef(), StringConstant.v(unit.toString()));
+            //toInsert.add(invokeLogCmd);
+
+            // add 'env.xxx = xxx;' after each line of code:
             for (Local local : locals) {
                 InstanceFieldRef fieldRef = Jimple.v().newInstanceFieldRef(env, envClass.getFieldByName(local.getName()).makeRef());
                 toInsert.add(Jimple.v().newAssignStmt(fieldRef, local));
@@ -65,6 +66,11 @@ public class CodeImplant extends BodyTransformer {
                 InstanceFieldRef fieldRef = Jimple.v().newInstanceFieldRef(env, envClass.getFieldByName(paramLocal.getName()).makeRef());
                 toInsert.add(Jimple.v().newAssignStmt(fieldRef, paramLocal));
             }
+
+            // add 'PexynLogger.logEnv(env);'
+            InvokeExpr invokeLogCEnv = Jimple.v().newStaticInvokeExpr(logEnv.makeRef(), env);
+            //toInsert.add(invokeLogCEnv);
+
             newStatements.add(new Pair<>(toInsert, unit));
         }
 
