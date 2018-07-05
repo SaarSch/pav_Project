@@ -1,6 +1,16 @@
 public class Test {
 
-//	public void A(Benchmarks.SLL head) {
+    public static class SLLNode {
+        public SLLNode(int data, SLLNode next) {
+            this.data = data;
+            this.next = next;
+        }
+
+        public int data;
+        public SLLNode next;
+    }
+
+//	public void A(Benchmarks.SLLNode head) {
 //		pav.PexynLogger.init(ReflectionUtils.getMethodByName(Benchmarks.Test.class, "A"), AEnv.class);
 //		AEnv env = new AEnv();
 //		// the first generation should call init +
@@ -11,9 +21,9 @@ public class Test {
 //		env.temp = null;
 //		pav.PexynLogger.logEnv(env); // TODO: remove?
 //
-//		Benchmarks.SLL temp = new Benchmarks.SLL(1, null);
+//		Benchmarks.SLLNode temp = new Benchmarks.SLLNode(1, null);
 //
-//		pav.PexynLogger.logCmd("Benchmarks.SLL temp = new Benchmarks.SLL(1, null);");
+//		pav.PexynLogger.logCmd("Benchmarks.SLLNode temp = new Benchmarks.SLLNode(1, null);");
 //		env.head = head;
 //		env.temp = temp;
 //		pav.PexynLogger.logEnv(env);
@@ -29,18 +39,18 @@ public class Test {
 //
 //
 //	public static class AEnv extends JavaEnv {
-//		public Benchmarks.SLL head; // method argument
-//		public Benchmarks.SLL temp; // local
+//		public Benchmarks.SLLNode head; // method argument
+//		public Benchmarks.SLLNode temp; // local
 //	}
 
-    public void A(SLL head) {
-        SLL temp = new SLL(1, null);
+    public void A(SLLNode head) {
+        SLLNode temp = new SLLNode(1, null);
         head.next = temp;
     }
 
     public static void main(String[] args) {
         // add call to soot compiler with our analysis (transform) added
         Test test = new Test();
-        test.A(new SLL(2, null));
+        test.A(new SLLNode(2, null));
     }
 }
