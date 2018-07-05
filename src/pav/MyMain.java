@@ -40,8 +40,8 @@ public class MyMain {
             // add 'PexynLogger.init(ReflectionUtils.getMethodByName(Test.class, "A"), AEnv.class);':
 
             // add 'env = new XXXEnv();':
-            Value env = generator.generateLocal(envClass.getType());
-            AssignStmt stmt = Jimple.v().newAssignStmt(env, Jimple.v().newParameterRef(envClass.getType(), 0));
+            Local env = generator.generateLocal(envClass.getType());
+            AssignStmt stmt = Jimple.v().newAssignStmt(env, Jimple.v().newNewExpr(envClass.getType()));
             units.insertBefore(stmt, units.getFirst());
 
             // add 'env.xxx = xxx;' after each line of code:
