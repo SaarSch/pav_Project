@@ -1,0 +1,163 @@
+public class Test extends java.lang.Object
+{
+/*Test.java*/
+
+/*[head]*/
+    public void A(Test$SLLNode)
+    {
+        Test this;
+        Test$SLLNode head, temp, temp$0;
+        A_Env $r0;
+
+        $r0 = new A_Env;
+        $r0.<A_Env: Test this> = this;
+        $r0.<A_Env: Test$SLLNode head> = head;
+        $r0.<A_Env: Test$SLLNode temp> = temp;
+        $r0.<A_Env: Test$SLLNode temp$0> = temp$0;
+        $r0.<A_Env: Test$SLLNode head> = head;
+        this := @this: Test;
+/*Source Line Pos Tag: sline: 46 eline: 49 spos: 5 epos: 5 file: Test.java*/
+        $r0.<A_Env: Test this> = this;
+        $r0.<A_Env: Test$SLLNode head> = head;
+        $r0.<A_Env: Test$SLLNode temp> = temp;
+        $r0.<A_Env: Test$SLLNode temp$0> = temp$0;
+        $r0.<A_Env: Test$SLLNode head> = head;
+        head := @parameter0: Test$SLLNode;
+/*Source Line Pos Tag: sline: 46 eline: 46 spos: 19 epos: 30 file: Test.java*/
+        $r0.<A_Env: Test this> = this;
+        $r0.<A_Env: Test$SLLNode head> = head;
+        $r0.<A_Env: Test$SLLNode temp> = temp;
+        $r0.<A_Env: Test$SLLNode temp$0> = temp$0;
+        $r0.<A_Env: Test$SLLNode head> = head;
+        temp$0 = new Test$SLLNode;
+/*Source Line Pos Tag: sline: 47 eline: 47 spos: 9 epos: 44 file: Test.java*/
+        $r0.<A_Env: Test this> = this;
+        $r0.<A_Env: Test$SLLNode head> = head;
+        $r0.<A_Env: Test$SLLNode temp> = temp;
+        $r0.<A_Env: Test$SLLNode temp$0> = temp$0;
+        $r0.<A_Env: Test$SLLNode head> = head;
+        specialinvoke temp$0.<Test$SLLNode: void <init>(int,Test$SLLNode)>(1, null);
+/*Source Line Pos Tag: sline: 47 eline: 47 spos: 24 epos: 43 file: Test.java*/
+        $r0.<A_Env: Test this> = this;
+        $r0.<A_Env: Test$SLLNode head> = head;
+        $r0.<A_Env: Test$SLLNode temp> = temp;
+        $r0.<A_Env: Test$SLLNode temp$0> = temp$0;
+        $r0.<A_Env: Test$SLLNode head> = head;
+        temp = temp$0;
+/*Source Line Pos Tag: sline: 47 eline: 47 spos: 24 epos: 43 file: Test.java*/
+        $r0.<A_Env: Test this> = this;
+        $r0.<A_Env: Test$SLLNode head> = head;
+        $r0.<A_Env: Test$SLLNode temp> = temp;
+        $r0.<A_Env: Test$SLLNode temp$0> = temp$0;
+        $r0.<A_Env: Test$SLLNode head> = head;
+        head.<Test$SLLNode: Test$SLLNode next> = temp;
+/*Source Line Pos Tag: sline: 48 eline: 48 spos: 14 epos: 17 file: Test.java*/
+        $r0.<A_Env: Test this> = this;
+        $r0.<A_Env: Test$SLLNode head> = head;
+        $r0.<A_Env: Test$SLLNode temp> = temp;
+        $r0.<A_Env: Test$SLLNode temp$0> = temp$0;
+        $r0.<A_Env: Test$SLLNode head> = head;
+        return;
+/*Source Line Pos Tag: sline: 48 eline: 48 spos: 14 epos: 17 file: Test.java*/
+
+        $r0.<A_Env: Test this> = this;
+        $r0.<A_Env: Test$SLLNode head> = head;
+        $r0.<A_Env: Test$SLLNode temp> = temp;
+        $r0.<A_Env: Test$SLLNode temp$0> = temp$0;
+        $r0.<A_Env: Test$SLLNode head> = head;
+    }
+
+/*[args]*/
+    public static void main(java.lang.String[])
+    {
+        java.lang.String[] args;
+        Test test, temp$0;
+        Test$SLLNode temp$1;
+        main_Env $r0;
+
+        $r0 = new main_Env;
+        $r0.<main_Env: java.lang.String[] args> = args;
+        $r0.<main_Env: Test test> = test;
+        $r0.<main_Env: Test temp$0> = temp$0;
+        $r0.<main_Env: Test$SLLNode temp$1> = temp$1;
+        $r0.<main_Env: java.lang.String[] args> = args;
+        args := @parameter0: java.lang.String[];
+/*Source Line Pos Tag: sline: 51 eline: 51 spos: 29 epos: 41 file: Test.java*/
+        $r0.<main_Env: java.lang.String[] args> = args;
+        $r0.<main_Env: Test test> = test;
+        $r0.<main_Env: Test temp$0> = temp$0;
+        $r0.<main_Env: Test$SLLNode temp$1> = temp$1;
+        $r0.<main_Env: java.lang.String[] args> = args;
+        temp$0 = new Test;
+/*Source Line Pos Tag: sline: 53 eline: 53 spos: 9 epos: 31 file: Test.java*/
+        $r0.<main_Env: java.lang.String[] args> = args;
+        $r0.<main_Env: Test test> = test;
+        $r0.<main_Env: Test temp$0> = temp$0;
+        $r0.<main_Env: Test$SLLNode temp$1> = temp$1;
+        $r0.<main_Env: java.lang.String[] args> = args;
+        specialinvoke temp$0.<Test: void <init>()>();
+/*Source Line Pos Tag: sline: 53 eline: 53 spos: 21 epos: 30 file: Test.java*/
+        $r0.<main_Env: java.lang.String[] args> = args;
+        $r0.<main_Env: Test test> = test;
+        $r0.<main_Env: Test temp$0> = temp$0;
+        $r0.<main_Env: Test$SLLNode temp$1> = temp$1;
+        $r0.<main_Env: java.lang.String[] args> = args;
+        test = temp$0;
+/*Source Line Pos Tag: sline: 53 eline: 53 spos: 21 epos: 30 file: Test.java*/
+        $r0.<main_Env: java.lang.String[] args> = args;
+        $r0.<main_Env: Test test> = test;
+        $r0.<main_Env: Test temp$0> = temp$0;
+        $r0.<main_Env: Test$SLLNode temp$1> = temp$1;
+        $r0.<main_Env: java.lang.String[] args> = args;
+        temp$1 = new Test$SLLNode;
+/*Source Line Pos Tag: sline: 54 eline: 54 spos: 9 epos: 37 file: Test.java*/
+        $r0.<main_Env: java.lang.String[] args> = args;
+        $r0.<main_Env: Test test> = test;
+        $r0.<main_Env: Test temp$0> = temp$0;
+        $r0.<main_Env: Test$SLLNode temp$1> = temp$1;
+        $r0.<main_Env: java.lang.String[] args> = args;
+        specialinvoke temp$1.<Test$SLLNode: void <init>(int,Test$SLLNode)>(2, null);
+/*Source Line Pos Tag: sline: 54 eline: 54 spos: 16 epos: 35 file: Test.java*/
+        $r0.<main_Env: java.lang.String[] args> = args;
+        $r0.<main_Env: Test test> = test;
+        $r0.<main_Env: Test temp$0> = temp$0;
+        $r0.<main_Env: Test$SLLNode temp$1> = temp$1;
+        $r0.<main_Env: java.lang.String[] args> = args;
+        virtualinvoke test.<Test: void A(Test$SLLNode)>(temp$1);
+/*Source Line Pos Tag: sline: 54 eline: 54 spos: 16 epos: 35 file: Test.java*/
+        $r0.<main_Env: java.lang.String[] args> = args;
+        $r0.<main_Env: Test test> = test;
+        $r0.<main_Env: Test temp$0> = temp$0;
+        $r0.<main_Env: Test$SLLNode temp$1> = temp$1;
+        $r0.<main_Env: java.lang.String[] args> = args;
+        return;
+/*Source Line Pos Tag: sline: 54 eline: 54 spos: 16 epos: 35 file: Test.java*/
+
+        $r0.<main_Env: java.lang.String[] args> = args;
+        $r0.<main_Env: Test test> = test;
+        $r0.<main_Env: Test temp$0> = temp$0;
+        $r0.<main_Env: Test$SLLNode temp$1> = temp$1;
+        $r0.<main_Env: java.lang.String[] args> = args;
+    }
+
+/*[]*/
+/*0*/
+    public void <init>()
+    {
+        Test this;
+        <init>_Env $r0;
+
+        $r0 = new <init>_Env;
+        $r0.<<init>_Env: Test this> = this;
+        this := @this: Test;
+/*1*/
+        $r0.<<init>_Env: Test this> = this;
+        specialinvoke this.<java.lang.Object: void <init>()>();
+/*1*/
+        $r0.<<init>_Env: Test this> = this;
+        return;
+/*1*/
+
+        $r0.<<init>_Env: Test this> = this;
+    }
+}
