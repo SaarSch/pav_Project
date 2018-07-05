@@ -1,3 +1,5 @@
+package pav;
+
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
@@ -31,7 +33,7 @@ public class PexynLogger {
 		}
 	}
 
-	public static void end(String fileName){
+	public static void dumpSpecToFile(String fileName){
 
 		PrintWriter writer;
 		try {

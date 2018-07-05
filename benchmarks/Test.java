@@ -1,7 +1,7 @@
 public class Test {
 
-//	public void A(SLL head) {
-//		PexynLogger.init(ReflectionUtils.getMethodByName(Test.class, "A"), AEnv.class);
+//	public void A(Benchmarks.SLL head) {
+//		pav.PexynLogger.init(ReflectionUtils.getMethodByName(Benchmarks.Test.class, "A"), AEnv.class);
 //		AEnv env = new AEnv();
 //		// the first generation should call init +
 //		// new Env +
@@ -9,28 +9,28 @@ public class Test {
 //		// assign env.temp=null for each local variable
 //		env.head = head;
 //		env.temp = null;
-//		PexynLogger.logEnv(env); // TODO: remove?
+//		pav.PexynLogger.logEnv(env); // TODO: remove?
 //
-//		SLL temp = new SLL(1, null);
+//		Benchmarks.SLL temp = new Benchmarks.SLL(1, null);
 //
-//		PexynLogger.logCmd("SLL temp = new SLL(1, null);");
+//		pav.PexynLogger.logCmd("Benchmarks.SLL temp = new Benchmarks.SLL(1, null);");
 //		env.head = head;
 //		env.temp = temp;
-//		PexynLogger.logEnv(env);
+//		pav.PexynLogger.logEnv(env);
 //
 //		head.next = temp;
 //
-//		PexynLogger.logCmd("head.next = temp;");
+//		pav.PexynLogger.logCmd("head.next = temp;");
 //		env.head = head;
 //		env.temp = temp;
-//		PexynLogger.logEnv(env);
-//		PexynLogger.end(this.getClass().getName());
+//		pav.PexynLogger.logEnv(env);
+//		pav.PexynLogger.dumpSpecToFile(this.getClass().getName());
 //	}
 //
 //
 //	public static class AEnv extends JavaEnv {
-//		public SLL head; // method argument
-//		public SLL temp; // local
+//		public Benchmarks.SLL head; // method argument
+//		public Benchmarks.SLL temp; // local
 //	}
 
     public void A(SLL head) {
