@@ -4,6 +4,7 @@ import soot.PackManager;
 import soot.Scene;
 import soot.SootClass;
 import soot.Transform;
+import soot.options.Options;
 
 import java.io.File;
 
@@ -13,10 +14,13 @@ public class MyMain {
 		PackManager.v().getPack("jtp")
 				.add(new Transform("jtp.CodeImplant", new CodeImplant()));
 
-        String s = Scene.v().getSootClassPath() + File.pathSeparator + "C:\\Users\\saars\\IdeaProjects\\PexynLogger\\out\\production\\PexynLogger";
+        String s = Scene.v().getSootClassPath() + File.pathSeparator + "C:\\Users\\Nevo2\\Documents\\אוניברסיטה\\רומן\\pav_Project_NEW\\out\\production\\pav_Project_NEW";
         Scene.v().setSootClassPath(s);
-        Scene.v().addBasicClass("Logger", SootClass.HIERARCHY);
-
+		System.setProperty("sun.boot.class.path", s);
+		System.setProperty("java.ext.dirs", s);
+//		SootClass Logger = Scene.v().loadClass("Logger", SootClass.HIERARCHY);
+//      Scene.v().addClass(Logger);
+        Scene.v().addBasicClass("Logger", SootClass.SIGNATURES);
 		soot.Main.main(args);
 	}
 }

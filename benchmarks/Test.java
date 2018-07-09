@@ -1,14 +1,14 @@
 public class Test {
 
-    public static class SLLNode {
-        public SLLNode(int data, SLLNode next) {
-            this.data = data;
-            this.next = next;
-        }
-
-        public int data;
-        public SLLNode next;
-    }
+//    public static class SLLNode {
+//        public SLLNode(int data, SLLNode next) {
+//            this.data = data;
+//            this.next = next;
+//        }
+//
+//        public int data;
+//        public SLLNode next;
+//    }
 
 //	public void A(Benchmarks.SLLNode head) {
 //		pav.PexynLogger.init(ReflectionUtils.getMethodByName(Benchmarks.Test.class, "A"), AEnv.class);
@@ -38,19 +38,25 @@ public class Test {
 //	}
 //
 //
-//	public static class AEnv extends JavaEnv {
+//	public static class A_Env extends JavaEnv {
 //		public Benchmarks.SLLNode head; // method argument
 //		public Benchmarks.SLLNode temp; // local
 //	}
 
-    public void A(SLLNode head) {
-        SLLNode temp = new SLLNode(1, null);
-        head.next = temp;
+//    public void A(SLLNode head) {
+//        SLLNode temp = new SLLNode(1, null);
+//        head.next = temp;
+//    }
+
+    public int nevo(int num) {
+        int temp = num + 24;
+        return temp;
+
     }
 
-    public static void main(String[] args) {
-        // add call to soot compiler with our analysis (transform) added
-        Test test = new Test();
-        test.A(new SLLNode(2, null));
-    }
+//    public static void main(String[] args) {
+//        // add call to soot compiler with our analysis (transform) added
+//        Test test = new Test();
+//        test.A(new SLLNode(2, null));
+//    }
 }
