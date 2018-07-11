@@ -76,7 +76,11 @@ public class CodeImplant extends BodyTransformer {
         InvokeExpr invokeInit = Jimple.v().newStaticInvokeExpr(init.makeRef(), ClassConstant.v("Test"), StringConstant.v(body.getMethod().getSignature()));
         Stmt invokeInitStmt = Jimple.v().newInvokeStmt(invokeInit);
         stms.insertBefore(invokeInitStmt, myStms.get(0));
-        int ab = 24;
+
+        // add 'PexynLogger.dumpSpecToFile("Test_Result");':
+        InvokeExpr invokeDumpSpecToFile = Jimple.v().newStaticInvokeExpr(dumpSpecToFile.makeRef(), StringConstant.v("Test_Result"));
+        Stmt invokeDumpSpecToFileStmt = Jimple.v().newInvokeStmt(invokeDumpSpecToFile);
+        stms.insertAfter(invokeDumpSpecToFileStmt, stms.getLast());
     }
 
     private ArrayList<Unit> generateMyStms(PatchingChain<Unit> stms) {
