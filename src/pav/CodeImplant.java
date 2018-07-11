@@ -6,15 +6,17 @@ import soot.jimple.*;
 import soot.util.Chain;
 import soot.util.HashChain;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class CodeImplant extends BodyTransformer {
     static SootClass counterClass;
-    static SootMethod logCmd, logEnv, dumpSpecToFile, getString;
+    static SootMethod logCmd, logEnv, dumpSpecToFile, getString, init;
 
     @Override
     protected void internalTransform(Body body, String s, Map map) {
         counterClass = Scene.v().getSootClass("Logger");
+        init = counterClass.getMethod("void init(java.lang.reflect.Method,java.lang.Class)");
         logCmd = counterClass.getMethod("void logCmd(java.lang.String)");
         logEnv = counterClass.getMethod("void logEnv(jminor.java.JavaEnv)");
         dumpSpecToFile = counterClass.getMethod("void dumpSpecToFile(java.lang.String)");
@@ -24,12 +26,16 @@ public class CodeImplant extends BodyTransformer {
 
         SootMethod method = body.getMethod();
         SootClass envClass = new SootClass(method.getName() + "_Env", Modifier.STATIC | Modifier.PUBLIC);
-        //envClass.setSuperclass(Scene.v().getSootClass("jminor.java.JavaEnv"));
+        envClass.setSuperclass(Scene.v().getSootClass("jminor.java.JavaEnv"));
+
+        LocalGenerator generator = new LocalGenerator(body);
+        Local envClassType = generator.generateLocal(envClass.getType());
+
         for (Local local : locals) {
             envClass.addField(new SootField(local.getName(), local.getType(), Modifier.PUBLIC));
         }
 //        int count = 0;
-        method.getParameterTypes();
+//        method.getParameterTypes();
 //        for (Type parameterType : method.getParameterTypes()) {
 //            envClass.addField(new SootField("param" + count, parameterType, Modifier.PUBLIC));
 //            count++;
@@ -37,23 +43,19 @@ public class CodeImplant extends BodyTransformer {
 //
         Scene.v().addClass(envClass);
         PatchingChain<Unit> stms = body.getUnits();
-        ArrayList<Unit> myStms = new ArrayList<>(stms);
-//
-//        // add 'PexynLogger.init(ReflectionUtils.getMethodByName(Test.class, "A"), AEnv.class);':
+        ArrayList<Unit> myStms = generateMyStms(stms);
+
         for (Unit stm : myStms) {
+            // add 'env.xxx = xxx;' after each line of code:
+            for (Local local : locals) {
+                InstanceFieldRef fieldRef = Jimple.v().newInstanceFieldRef(envClassType, envClass.getFieldByName(local.getName()).makeRef());
+                stms.insertAfter(Jimple.v().newAssignStmt(fieldRef, local), stm);
+            }
+            // add 'PexynLogger.logCmd();'
             InvokeExpr invokeLogCmd = Jimple.v().newStaticInvokeExpr(logCmd.makeRef(), StringConstant.v(stm.toString()));
             Stmt invokeLogCmdStmt = Jimple.v().newInvokeStmt(invokeLogCmd);
             stms.insertAfter(invokeLogCmdStmt, stm);
-            // add 'PexynLogger.logCmd();'
-//            InvokeExpr invokeLogCmd = Jimple.v().newStaticInvokeExpr(logCmd.makeRef(), StringConstant.v(stm.toString()));
-//            Stmt invokeLogCmdStmt = Jimple.v().newInvokeStmt(invokeLogCmd);
-//            stms.insertAfter(invokeLogCmdStmt, stm);
-//
-//            // add 'env.xxx = xxx;' after each line of code:
-//            for (Local local : locals) {
-//                InstanceFieldRef fieldRef = Jimple.v().newInstanceFieldRef(env, envClass.getFieldByName(local.getName()).makeRef());
-//                toInsert.add(Jimple.v().newAssignStmt(fieldRef, local));
-//            }
+
 //            for (Local paramLocal : body.getParameterLocals()) {
 //                InstanceFieldRef fieldRef = Jimple.v().newInstanceFieldRef(env, envClass.getFieldByName(paramLocal.getName()).makeRef());
 //                toInsert.add(Jimple.v().newAssignStmt(fieldRef, paramLocal));
@@ -67,16 +69,28 @@ public class CodeImplant extends BodyTransformer {
         }
 
         // add 'env = new XXX_Env();':
-        LocalGenerator generator = new LocalGenerator(body);
-        Local envClassType = generator.generateLocal(envClass.getType());
         AssignStmt initEnvClassStmt = Jimple.v().newAssignStmt(envClassType, Jimple.v().newNewExpr(envClass.getType()));
-        stms.insertBefore(initEnvClassStmt, stms.getFirst());
-        int ab = 24;
+        stms.insertBefore(initEnvClassStmt, myStms.get(0));
 
-//        for (Pair<List<Unit>, Unit> p : newStatements) {
-//            body.getUnits().insertAfter(p.getKey(), p.getValue());
-//        }
-//
-//        add last units
+        // add 'PexynLogger.init(ReflectionUtils.getMethodByName(Test.class, "A"), AEnv.class);':
+        InvokeExpr invokeInit = Jimple.v().newStaticInvokeExpr(init.makeRef(), ClassConstant.v("Test"), StringConstant.v(body.getMethod().getSignature()));
+        Stmt invokeInitStmt = Jimple.v().newInvokeStmt(invokeInit);
+        stms.insertBefore(invokeInitStmt, myStms.get(0));
+        int ab = 24;
+    }
+
+    private ArrayList<Unit> generateMyStms(PatchingChain<Unit> stms) {
+        ArrayList<Unit> ans = new ArrayList<>(stms);
+        int numOfStmToRemove = 0;
+        Unit currentStm = stms.getFirst();
+        while (currentStm.getUseAndDefBoxes().get(1).toString().contains("@")) {
+            numOfStmToRemove++;
+            currentStm = stms.getSuccOf(currentStm);
+        }
+        for (int i = 0; i < numOfStmToRemove; i++) {
+            ans.remove(0);
+        }
+        return ans;
     }
 }
+
