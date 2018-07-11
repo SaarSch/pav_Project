@@ -12,11 +12,15 @@ import java.util.Map;
 public class CodeImplant extends BodyTransformer {
     static SootClass counterClass;
     static SootMethod logCmd, logEnv, dumpSpecToFile, getString, init;
+    static String mmethodClassName;
 
     @Override
     protected void internalTransform(Body body, String s, Map map) {
+        if (body.getMethod().getName().equals("main") || body.getMethod().getName().equals("<init>")) {
+            return;
+        }
         counterClass = Scene.v().getSootClass("Logger");
-        init = counterClass.getMethod("void init(java.lang.reflect.Method,java.lang.Class)");
+        init = counterClass.getMethod("void init(java.lang.Class,java.lang.String,java.lang.Class)");
         logCmd = counterClass.getMethod("void logCmd(java.lang.String)");
         logEnv = counterClass.getMethod("void logEnv(jminor.java.JavaEnv)");
         dumpSpecToFile = counterClass.getMethod("void dumpSpecToFile(java.lang.String)");
@@ -34,18 +38,17 @@ public class CodeImplant extends BodyTransformer {
         for (Local local : locals) {
             envClass.addField(new SootField(local.getName(), local.getType(), Modifier.PUBLIC));
         }
-//        int count = 0;
-//        method.getParameterTypes();
-//        for (Type parameterType : method.getParameterTypes()) {
-//            envClass.addField(new SootField("param" + count, parameterType, Modifier.PUBLIC));
-//            count++;
-//        }
-//
+
         Scene.v().addClass(envClass);
         PatchingChain<Unit> stms = body.getUnits();
         ArrayList<Unit> myStms = generateMyStms(stms);
 
         for (Unit stm : myStms) {
+            // add 'PexynLogger.logEnv(env);'
+            InvokeExpr invokeLogCEnv = Jimple.v().newStaticInvokeExpr(logEnv.makeRef(), ClassConstant.v(envClass.getName()));
+            Stmt invokeLogCEnvStmt = Jimple.v().newInvokeStmt(invokeLogCEnv);
+            stms.insertAfter(invokeLogCEnvStmt, stm);
+
             // add 'env.xxx = xxx;' after each line of code:
             for (Local local : locals) {
                 InstanceFieldRef fieldRef = Jimple.v().newInstanceFieldRef(envClassType, envClass.getFieldByName(local.getName()).makeRef());
@@ -55,17 +58,6 @@ public class CodeImplant extends BodyTransformer {
             InvokeExpr invokeLogCmd = Jimple.v().newStaticInvokeExpr(logCmd.makeRef(), StringConstant.v(stm.toString()));
             Stmt invokeLogCmdStmt = Jimple.v().newInvokeStmt(invokeLogCmd);
             stms.insertAfter(invokeLogCmdStmt, stm);
-
-//            for (Local paramLocal : body.getParameterLocals()) {
-//                InstanceFieldRef fieldRef = Jimple.v().newInstanceFieldRef(env, envClass.getFieldByName(paramLocal.getName()).makeRef());
-//                toInsert.add(Jimple.v().newAssignStmt(fieldRef, paramLocal));
-//            }
-//
-//            // add 'PexynLogger.logEnv(env);'
-//            InvokeExpr invokeLogCEnv = Jimple.v().newStaticInvokeExpr(logEnv.makeRef(), env);
-//            //toInsert.add(invokeLogCEnv);
-//
-//            newStatements.add(new Pair<>(toInsert, unit));
         }
 
         // add 'env = new XXX_Env();':
@@ -73,7 +65,7 @@ public class CodeImplant extends BodyTransformer {
         stms.insertBefore(initEnvClassStmt, myStms.get(0));
 
         // add 'PexynLogger.init(ReflectionUtils.getMethodByName(Test.class, "A"), AEnv.class);':
-        InvokeExpr invokeInit = Jimple.v().newStaticInvokeExpr(init.makeRef(), ClassConstant.v("Test"), StringConstant.v(body.getMethod().getSignature()));
+        InvokeExpr invokeInit = Jimple.v().newStaticInvokeExpr(init.makeRef(), ClassConstant.v(mmethodClassName), StringConstant.v(body.getMethod().getName()), ClassConstant.v(envClass.getName()));
         Stmt invokeInitStmt = Jimple.v().newInvokeStmt(invokeInit);
         stms.insertBefore(invokeInitStmt, myStms.get(0));
 

@@ -18,8 +18,7 @@ public class MyMain {
         Scene.v().setSootClassPath(s);
 		System.setProperty("sun.boot.class.path", s);
 		System.setProperty("java.ext.dirs", s);
-//		SootClass Logger = Scene.v().loadClass("Logger", SootClass.HIERARCHY);
-//      Scene.v().addClass(Logger);
+		CodeImplant.mmethodClassName = args[args.length - 1];
         Scene.v().addBasicClass("Logger", SootClass.SIGNATURES);
 		soot.Main.main(args);
 	}

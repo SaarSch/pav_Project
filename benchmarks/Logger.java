@@ -1,3 +1,4 @@
+import bgu.cs.util.ReflectionUtils;
 import jminor.JmStore;
 import jminor.java.JavaEnv;
 import jminor.java.JavaHeapWalker;
@@ -10,11 +11,12 @@ public class Logger {
     static private final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Logger.class.getName());
     static JavaHeapWalker walker = null;
 
-    public static void init(Method m, Class c) {
-        walker = new JavaHeapWalker(m, c, logger);
+    public static void init(Class mmethodClass, String sMethod, Class envClass) {
+        walker = new JavaHeapWalker(ReflectionUtils.getMethodByName(mmethodClass, sMethod), envClass, logger);
     }
 
     public static void logCmd(String cmd) {
+        System.out.println(cmd);
         str.append(cmd);
         str.append("\n");
     }
@@ -33,7 +35,6 @@ public class Logger {
     }
 
     public static void dumpSpecToFile(String fileName) {
-
         PrintWriter writer;
         try {
             String res = Logger.getString();
