@@ -3,9 +3,12 @@ package pav;
 import soot.*;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.*;
+import soot.options.Options;
 import soot.util.Chain;
 import soot.util.HashChain;
+import soot.util.JasminOutputStream;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -19,8 +22,9 @@ public class CodeImplant extends BodyTransformer {
         if (body.getMethod().getName().equals("main") || body.getMethod().getName().equals("<init>")) {
             return;
         }
+
         counterClass = Scene.v().getSootClass("Logger");
-        init = counterClass.getMethod("void init(java.lang.Class,java.lang.String,java.lang.Class)");
+        init = counterClass.getMethod("void init(java.lang.String,java.lang.String,java.lang.String)");
         logCmd = counterClass.getMethod("void logCmd(java.lang.String)");
         logEnv = counterClass.getMethod("void logEnv(jminor.java.JavaEnv)");
         dumpSpecToFile = counterClass.getMethod("void dumpSpecToFile(java.lang.String)");
@@ -33,25 +37,44 @@ public class CodeImplant extends BodyTransformer {
         envClass.setSuperclass(Scene.v().getSootClass("jminor.java.JavaEnv"));
 
         LocalGenerator generator = new LocalGenerator(body);
-        Local envClassType = generator.generateLocal(envClass.getType());
+        Local envClassLocal = generator.generateLocal(envClass.getType());
 
         for (Local local : locals) {
             envClass.addField(new SootField(local.getName(), local.getType(), Modifier.PUBLIC));
         }
-
         Scene.v().addClass(envClass);
+
+
+        String fileName = SourceLocator.v().getFileNameFor(envClass, Options.output_format_class);
+        OutputStream streamOut = null;
+        try {
+            streamOut = new JasminOutputStream(new FileOutputStream(fileName));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
+
+        JasminClass jasminClass = new soot.jimple.JasminClass(envClass);
+        jasminClass.print(writerOut);
+        writerOut.flush();
+        try {
+            streamOut.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         PatchingChain<Unit> stms = body.getUnits();
         ArrayList<Unit> myStms = generateMyStms(stms);
 
         for (Unit stm : myStms) {
             // add 'PexynLogger.logEnv(env);'
-            InvokeExpr invokeLogCEnv = Jimple.v().newStaticInvokeExpr(logEnv.makeRef(), ClassConstant.v(envClass.getName()));
+            InvokeExpr invokeLogCEnv = Jimple.v().newStaticInvokeExpr(logEnv.makeRef(), envClassLocal);
             Stmt invokeLogCEnvStmt = Jimple.v().newInvokeStmt(invokeLogCEnv);
             stms.insertAfter(invokeLogCEnvStmt, stm);
 
             // add 'env.xxx = xxx;' after each line of code:
             for (Local local : locals) {
-                InstanceFieldRef fieldRef = Jimple.v().newInstanceFieldRef(envClassType, envClass.getFieldByName(local.getName()).makeRef());
+                InstanceFieldRef fieldRef = Jimple.v().newInstanceFieldRef(envClassLocal, envClass.getFieldByName(local.getName()).makeRef());
                 stms.insertAfter(Jimple.v().newAssignStmt(fieldRef, local), stm);
             }
             // add 'PexynLogger.logCmd();'
@@ -61,11 +84,11 @@ public class CodeImplant extends BodyTransformer {
         }
 
         // add 'env = new XXX_Env();':
-        AssignStmt initEnvClassStmt = Jimple.v().newAssignStmt(envClassType, Jimple.v().newNewExpr(envClass.getType()));
+        AssignStmt initEnvClassStmt = Jimple.v().newAssignStmt(envClassLocal, Jimple.v().newNewExpr(envClass.getType()));
         stms.insertBefore(initEnvClassStmt, myStms.get(0));
 
         // add 'PexynLogger.init(ReflectionUtils.getMethodByName(Test.class, "A"), AEnv.class);':
-        InvokeExpr invokeInit = Jimple.v().newStaticInvokeExpr(init.makeRef(), ClassConstant.v(mmethodClassName), StringConstant.v(body.getMethod().getName()), ClassConstant.v(envClass.getName()));
+        InvokeExpr invokeInit = Jimple.v().newStaticInvokeExpr(init.makeRef(), StringConstant.v(mmethodClassName), StringConstant.v(body.getMethod().getName()), StringConstant.v(envClass.getName()));
         Stmt invokeInitStmt = Jimple.v().newInvokeStmt(invokeInit);
         stms.insertBefore(invokeInitStmt, myStms.get(0));
 

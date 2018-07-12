@@ -11,8 +11,14 @@ public class Logger {
     static private final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Logger.class.getName());
     static JavaHeapWalker walker = null;
 
-    public static void init(Class mmethodClass, String sMethod, Class envClass) {
-        walker = new JavaHeapWalker(ReflectionUtils.getMethodByName(mmethodClass, sMethod), envClass, logger);
+    public static void init(String mmethodClassName, String sMethod, String envClassName) {
+        try {
+            Class<?> mmethodClass = Class.forName(mmethodClassName);
+            Class<? extends JavaEnv> envClass = (Class<? extends JavaEnv>) Class.forName(envClassName);
+            walker = new JavaHeapWalker(ReflectionUtils.getMethodByName(mmethodClass, sMethod), envClass, logger);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void logCmd(String cmd) {

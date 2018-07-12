@@ -1,14 +1,14 @@
 public class Test {
 
-//    public static void main(String[] args) {
-//        // add call to soot compiler with our analysis (transform) added
-//        Test test = new Test();
-//        test.nevo();
-//    }
-//
-//    public void nevo() {
-//        int temp = 24;
-//    }
+    public static void main(String[] args) {
+        // add call to soot compiler with our analysis (transform) added
+        Test test = new Test();
+        test.nevo();
+    }
+
+    public void nevo() {
+        int temp = 24;
+    }
 
 
 //	public void A(Benchmarks.SLLNode head) {
@@ -44,24 +44,24 @@ public class Test {
 //		public Benchmarks.SLLNode temp; // local
 //	}
 
-    public static class SLLNode {
-        public SLLNode(int data, SLLNode next) {
-            this.data = data;
-            this.next = next;
-        }
-
-        public int data;
-        public SLLNode next;
-    }
-
-    public void nevo_mashiach(SLLNode head) {
-        SLLNode temp = new SLLNode(1, null);
-        head.next = temp;
-    }
-
-    public static void main(String[] args) {
-        // add call to soot compiler with our analysis (transform) added
-        Test test = new Test();
-        test.nevo_mashiach(new SLLNode(2, null));
-    }
+//    public static class SLLNode {
+//        public SLLNode(int data, SLLNode next) {
+//            this.data = data;
+//            this.next = next;
+//        }
+//
+//        public int data;
+//        public SLLNode next;
+//    }
+//
+//    public void nevo_mashiach(SLLNode head) {
+//        SLLNode temp = new SLLNode(1, null);
+//        head.next = temp;
+//    }
+//
+//    public static void main(String[] args) {
+//        // add call to soot compiler with our analysis (transform) added
+//        Test test = new Test();
+//        test.nevo_mashiach(new SLLNode(2, null));
+//    }
 }
