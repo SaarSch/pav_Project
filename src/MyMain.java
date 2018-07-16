@@ -1,10 +1,7 @@
-package pav;
-
 import soot.PackManager;
 import soot.Scene;
 import soot.SootClass;
 import soot.Transform;
-import soot.options.Options;
 
 import java.io.File;
 

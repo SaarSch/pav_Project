@@ -1,5 +1,4 @@
-package pav;
-
+import jminor.java.JavaEnv;
 import soot.*;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.*;
@@ -31,9 +30,10 @@ public class CodeImplant extends BodyTransformer {
         getString = counterClass.getMethod("java.lang.String getString()");
 
         Chain<Local> locals = new HashChain<>(body.getLocals());
+        locals.removeFirst();
 
         SootMethod method = body.getMethod();
-        SootClass envClass = new SootClass(method.getName() + "_Env", Modifier.STATIC | Modifier.PUBLIC);
+        SootClass envClass = new SootClass(method.getName() + "_Env", Modifier.PUBLIC);
         envClass.setSuperclass(Scene.v().getSootClass("jminor.java.JavaEnv"));
 
         LocalGenerator generator = new LocalGenerator(body);
@@ -95,7 +95,7 @@ public class CodeImplant extends BodyTransformer {
         // add 'PexynLogger.dumpSpecToFile("Test_Result");':
         InvokeExpr invokeDumpSpecToFile = Jimple.v().newStaticInvokeExpr(dumpSpecToFile.makeRef(), StringConstant.v("Test_Result"));
         Stmt invokeDumpSpecToFileStmt = Jimple.v().newInvokeStmt(invokeDumpSpecToFile);
-        stms.insertAfter(invokeDumpSpecToFileStmt, stms.getLast());
+        stms.insertBefore(invokeDumpSpecToFileStmt, stms.getLast());
     }
 
     private ArrayList<Unit> generateMyStms(PatchingChain<Unit> stms) {
@@ -109,6 +109,7 @@ public class CodeImplant extends BodyTransformer {
         for (int i = 0; i < numOfStmToRemove; i++) {
             ans.remove(0);
         }
+        ans.remove(ans.size() - 1);
         return ans;
     }
 }

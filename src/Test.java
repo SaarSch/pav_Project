@@ -3,11 +3,11 @@ public class Test {
     public static void main(String[] args) {
         // add call to soot compiler with our analysis (transform) added
         Test test = new Test();
-        test.nevo();
+        test.nevo(2);
     }
 
-    public void nevo() {
-        int temp = 24;
+    public void nevo(int num) {
+        int temp = num;
     }
 
 

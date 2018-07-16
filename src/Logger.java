@@ -10,8 +10,10 @@ public class Logger {
     static StringBuilder str = new StringBuilder();
     static private final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Logger.class.getName());
     static JavaHeapWalker walker = null;
+    static JavaEnv javaEnvObject;
 
     public static void init(String mmethodClassName, String sMethod, String envClassName) {
+        str.append("example {\r\n" + "");
         try {
             Class<?> mmethodClass = Class.forName(mmethodClassName);
             Class<? extends JavaEnv> envClass = (Class<? extends JavaEnv>) Class.forName(envClassName);
@@ -22,12 +24,14 @@ public class Logger {
     }
 
     public static void logCmd(String cmd) {
+        System.out.println("YAYAYAYAYA i'm inside logCmd!!!");
         System.out.println(cmd);
-        str.append(cmd);
+        str.append("\t" + cmd);
         str.append("\n");
     }
 
     public static void logEnv(JavaEnv env) {
+        System.out.println("YAYAYAYAYA i'm inside logEnv!!!");
         if (walker != null) {
             JmStore store;
             try {
@@ -41,6 +45,7 @@ public class Logger {
     }
 
     public static void dumpSpecToFile(String fileName) {
+        str.append(" }\r\n" + "  ");
         PrintWriter writer;
         try {
             String res = Logger.getString();
