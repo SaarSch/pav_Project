@@ -1,0 +1,65 @@
+public class Test extends java.lang.Object
+{
+/*Test.java*/
+
+/*0*/
+    public void <init>()
+    {
+        Test this;
+
+        this := @this: Test;
+/*1*/
+        specialinvoke this.<java.lang.Object: void <init>()>();
+/*1*/
+        return;
+/*1*/
+    }
+
+/*4*/
+    public static void main(java.lang.String[])
+    {
+        java.lang.String[] args;
+        Test $r0, test;
+
+        args := @parameter0: java.lang.String[];
+/*5*/
+        $r0 = new Test;
+/*5*/
+        specialinvoke $r0.<Test: void <init>()>();
+/*5*/
+        test = $r0;
+/*5*/
+        virtualinvoke test.<Test: void nevo()>();
+/*6*/
+        return;
+/*7*/
+    }
+
+/*9*/
+    public void nevo()
+    {
+        Test this;
+        byte temp;
+        nevo_Env $r0;
+
+        this := @this: Test;
+/*10*/
+        $r0 = new nevo_Env;
+        staticinvoke <Logger: void init(java.lang.String,java.lang.String,java.lang.String)>("Test", "nevo", "nevo_Env");
+        temp = 24;
+/*10*/
+/*10*/
+        staticinvoke <Logger: void logCmd(java.lang.String)>("temp = 24");
+        $r0.<nevo_Env: byte temp> = temp;
+        $r0.<nevo_Env: Test this> = this;
+        staticinvoke <Logger: void logEnv(jminor.java.JavaEnv)>($r0);
+        return;
+/*11*/
+
+        staticinvoke <Logger: void logCmd(java.lang.String)>("return");
+        $r0.<nevo_Env: byte temp> = temp;
+        $r0.<nevo_Env: Test this> = this;
+        staticinvoke <Logger: void logEnv(jminor.java.JavaEnv)>($r0);
+        staticinvoke <Logger: void dumpSpecToFile(java.lang.String)>("Test_Result");
+    }
+}
