@@ -1,55 +1,64 @@
-import bgu.cs.util.ReflectionUtils;
-import jminor.JmStore;
-import jminor.java.JavaEnv;
-import jminor.java.JavaHeapWalker;
-
 import java.io.PrintWriter;
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 
 public class Logger {
-    static StringBuilder str = new StringBuilder();
-    static private final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Logger.class.getName());
-    static JavaHeapWalker walker = null;
-    static JavaEnv javaEnvObject;
+    private static StringBuilder str = new StringBuilder();
 
-    public static void init(String mmethodClassName, String sMethod, String envClassName) {
-        str.append("example {\r\n" + "");
-        try {
-            Class<?> mmethodClass = Class.forName(mmethodClassName);
-            Class<? extends JavaEnv> envClass = (Class<? extends JavaEnv>) Class.forName(envClassName);
-            walker = new JavaHeapWalker(ReflectionUtils.getMethodByName(mmethodClass, sMethod), envClass, logger);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+    public static void init(String function_name) {
+        System.out.print("\n\n*** " + function_name + " ***");
+        str.append("\n\n*** " + function_name + " ***");
     }
 
     public static void logCmd(String cmd) {
-        System.out.println("YAYAYAYAYA i'm inside logCmd!!!");
-        System.out.println(cmd);
-        str.append("\t" + cmd);
-        str.append("\n");
+        System.out.print("\nlogCmd: " + cmd);
+        str.append("\nlogCmd: " + cmd);
     }
 
-    public static void logEnv(JavaEnv env) {
-        System.out.println("YAYAYAYAYA i'm inside logEnv!!!");
-        if (walker != null) {
-            JmStore store;
+    public static void printLocal(int local, String name) {
+        firstPrint(name);
+        System.out.print(local);
+        str.append(local);
+    }
+
+    public static void printLocal(Object local, String name) {
+        firstPrint(name);
+        if (null == local) {
+            System.out.print("null");
+            str.append("null");
+            return;
+        }
+        System.out.print(local);
+        str.append(local);
+        Field fields[] = local.getClass().getDeclaredFields();
+        for (Field field : fields) {
             try {
-                store = walker.walk(env);
-                str.append(store.toString());
-                str.append("\n");
-            } catch (Exception e) {
+                String fieldType = field.getType().toString();
+                String fieldName = field.getName();
+                if (fieldType.equals("int")) {
+                    printLocal((int) field.get(local), fieldName);
+                } else {
+                    printLocal(field.get(local), fieldName);
+                }
+            } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    private static void firstPrint(String name) {
+        if (name.contains("#LOCAL#")) {
+            System.out.print("\n" + name + "--> ");
+            str.append("\n" + name + "--> ");
+        } else {
+            System.out.print("\t" + name + ": ");
+            str.append("\t" + name + ": ");
+        }
+    }
+
     public static void dumpSpecToFile(String fileName) {
-        str.append(" }\r\n" + "  ");
         PrintWriter writer;
         try {
             String res = Logger.getString();
-            System.out.println(res);
             writer = new PrintWriter(fileName + ".spec", "UTF-8");
             writer.println(res);
             writer.close();
@@ -58,7 +67,7 @@ public class Logger {
         }
     }
 
-    public static String getString() {
+    private static String getString() {
         return str.toString();
     }
 }
