@@ -15,51 +15,127 @@ public class Test extends java.lang.Object
 /*1*/
     }
 
+/*3*/
+    public void exemple_2(SLLNode, SLLNode, SLLNode)
+    {
+        Test this;
+        SLLNode head, temp, anotherTemp;
+
+        this := @this: Test;
 /*4*/
+        head := @parameter0: SLLNode;
+/*4*/
+        temp := @parameter1: SLLNode;
+/*4*/
+        anotherTemp := @parameter2: SLLNode;
+/*4*/
+        staticinvoke <Logger: void init(java.lang.String)>("exemple_2");
+        head.<SLLNode: int data> = 3;
+/*4*/
+        staticinvoke <Logger: void logCmd(java.lang.String)>("head.<SLLNode: int data> = 3");
+        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>(anotherTemp, "#LOCAL#_anotherTemp");
+        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>(temp, "#LOCAL#_temp");
+        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>(head, "#LOCAL#_head");
+        head.<SLLNode: SLLNode next> = temp;
+/*5*/
+        staticinvoke <Logger: void logCmd(java.lang.String)>("head.<SLLNode: SLLNode next> = temp");
+        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>(anotherTemp, "#LOCAL#_anotherTemp");
+        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>(temp, "#LOCAL#_temp");
+        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>(head, "#LOCAL#_head");
+        head.<SLLNode: int data> = 4;
+/*6*/
+        staticinvoke <Logger: void logCmd(java.lang.String)>("head.<SLLNode: int data> = 4");
+        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>(anotherTemp, "#LOCAL#_anotherTemp");
+        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>(temp, "#LOCAL#_temp");
+        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>(head, "#LOCAL#_head");
+        anotherTemp.<SLLNode: int data> = 5;
+/*7*/
+        staticinvoke <Logger: void logCmd(java.lang.String)>("anotherTemp.<SLLNode: int data> = 5");
+        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>(anotherTemp, "#LOCAL#_anotherTemp");
+        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>(temp, "#LOCAL#_temp");
+        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>(head, "#LOCAL#_head");
+        staticinvoke <Logger: void dumpSpecToFile(java.lang.String)>("Test_Result");
+        return;
+/*8*/
+    }
+
+/*10*/
+    public void exemple_1(int)
+    {
+        Test this;
+        int num, temp;
+
+        this := @this: Test;
+/*11*/
+        num := @parameter0: int;
+/*11*/
+        staticinvoke <Logger: void init(java.lang.String)>("exemple_1");
+        temp = num;
+/*11*/
+/*11*/
+        staticinvoke <Logger: void logCmd(java.lang.String)>("temp = num");
+        staticinvoke <Logger: void printLocal(int,java.lang.String)>(temp, "#LOCAL#_temp");
+        staticinvoke <Logger: void printLocal(int,java.lang.String)>(num, "#LOCAL#_num");
+        num = temp;
+/*12*/
+/*12*/
+        staticinvoke <Logger: void logCmd(java.lang.String)>("num = temp");
+        staticinvoke <Logger: void printLocal(int,java.lang.String)>(temp, "#LOCAL#_temp");
+        staticinvoke <Logger: void printLocal(int,java.lang.String)>(num, "#LOCAL#_num");
+        num = num + 1;
+/*13*/
+        staticinvoke <Logger: void logCmd(java.lang.String)>("num = num + 1");
+        staticinvoke <Logger: void printLocal(int,java.lang.String)>(temp, "#LOCAL#_temp");
+        staticinvoke <Logger: void printLocal(int,java.lang.String)>(num, "#LOCAL#_num");
+        staticinvoke <Logger: void dumpSpecToFile(java.lang.String)>("Test_Result");
+        return;
+/*14*/
+    }
+
+/*16*/
     public static void main(java.lang.String[])
     {
         java.lang.String[] args;
-        Test $r0, test;
+        java.lang.Object test, head, temp, anotherTemp;
+        Test tmp$1275143523, tmp;
+        SLLNode tmp$1297189682, tmp$238816832, tmp$1934932165, tmp, tmp, tmp;
 
         args := @parameter0: java.lang.String[];
-/*5*/
-        $r0 = new Test;
-/*5*/
-        specialinvoke $r0.<Test: void <init>()>();
-/*5*/
-        test = $r0;
-/*5*/
-        virtualinvoke test.<Test: void nevo()>();
-/*6*/
+/*17*/
+        tmp$1275143523 = new Test;
+/*17*/
+        specialinvoke tmp$1275143523.<Test: void <init>()>();
+/*17*/
+        test = tmp$1275143523;
+/*17*/
+        tmp = (Test) test;
+        virtualinvoke tmp.<Test: void exemple_1(int)>(2);
+/*18*/
+        tmp$1297189682 = new SLLNode;
+/*20*/
+        specialinvoke tmp$1297189682.<SLLNode: void <init>(int,SLLNode)>(2, null);
+/*20*/
+        head = tmp$1297189682;
+/*20*/
+        tmp$238816832 = new SLLNode;
+/*21*/
+        specialinvoke tmp$238816832.<SLLNode: void <init>(int,SLLNode)>(1, null);
+/*21*/
+        temp = tmp$238816832;
+/*21*/
+        tmp$1934932165 = new SLLNode;
+/*22*/
+        specialinvoke tmp$1934932165.<SLLNode: void <init>(int,SLLNode)>(1, null);
+/*22*/
+        anotherTemp = tmp$1934932165;
+/*22*/
+        tmp = (Test) test;
+        tmp = (SLLNode) head;
+        tmp = (SLLNode) temp;
+        tmp = (SLLNode) anotherTemp;
+        virtualinvoke tmp.<Test: void exemple_2(SLLNode,SLLNode,SLLNode)>(tmp, tmp, tmp);
+/*23*/
         return;
-/*7*/
-    }
-
-/*9*/
-    public void nevo()
-    {
-        Test this;
-        byte temp;
-        nevo_Env $r0;
-
-        this := @this: Test;
-/*10*/
-        $r0 = new nevo_Env;
-        staticinvoke <Logger: void init(java.lang.String,java.lang.String,java.lang.String)>("Test", "nevo", "nevo_Env");
-        temp = 24;
-/*10*/
-/*10*/
-        staticinvoke <Logger: void logCmd(java.lang.String)>("temp = 24");
-        $r0.<nevo_Env: byte temp> = temp;
-        $r0.<nevo_Env: Test this> = this;
-        staticinvoke <Logger: void logEnv(jminor.java.JavaEnv)>($r0);
-        return;
-/*11*/
-
-        staticinvoke <Logger: void logCmd(java.lang.String)>("return");
-        $r0.<nevo_Env: byte temp> = temp;
-        $r0.<nevo_Env: Test this> = this;
-        staticinvoke <Logger: void logEnv(jminor.java.JavaEnv)>($r0);
-        staticinvoke <Logger: void dumpSpecToFile(java.lang.String)>("Test_Result");
+/*24*/
     }
 }

@@ -9,8 +9,7 @@ public class MyMain {
 
     public static void main(String[] args) {
         PackManager.v().getPack("jtp").add(new Transform("jtp.CodeImplant", new CodeImplant()));
-
-        String s = Scene.v().getSootClassPath() + File.pathSeparator + "C:\\Users\\Nevo2\\Documents\\אוניברסיטה\\רומן\\pav_Project_NEW\\sootOutput";
+        String s = Scene.v().getSootClassPath();
         Scene.v().setSootClassPath(s);
         System.setProperty("sun.boot.class.path", s);
         System.setProperty("java.ext.dirs", s);
