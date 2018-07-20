@@ -1,73 +1,90 @@
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 public class Logger {
     private static StringBuilder str = new StringBuilder();
+    private static ArrayList<Integer> previousValues = new ArrayList<>();
+    private static boolean firstRound = true;
 
+    public static void print(String s) {
+        System.out.print(s);
+        str.append(s);
+    }
     public static void init(String function_name) {
-        System.out.print("\n\n*** " + function_name + " ***");
-        str.append("\n\n*** " + function_name + " ***");
+        print("\n\n*** Method: " + function_name + " ***");
     }
 
     public static void logCmd(String cmd) {
-        System.out.print("\nlogCmd: " + cmd);
-        str.append("\nlogCmd: " + cmd);
+        print("\n" + cmd + ";");
     }
 
-    public static void printLocal(int local, String name) {
+    public static void printStr(String str) {
+        print(str);
+    }
+
+    public static void printLocal(int local, String name, boolean printDeltas) {
         firstPrint(name);
-        System.out.print(local);
-        str.append(local);
+        print(local + " && ");
     }
 
-    public static void printLocal(Object local, String name) {
+    public static void printLocal(Object local, String name, boolean printDeltas) {
         firstPrint(name);
         if (null == local) {
-            System.out.print("null");
-            str.append("null");
+            print("null");
             return;
         }
-        System.out.print(local);
-        str.append(local);
+        print(local + "");
+
+        int currentLocal = 0;
         Field fields[] = local.getClass().getDeclaredFields();
         for (Field field : fields) {
             try {
                 String fieldType = field.getType().toString();
                 String fieldName = field.getName();
                 if (fieldType.equals("int")) {
-                    printLocal((int) field.get(local), fieldName);
+                    int intValue = (int) field.get(local);
+                    boolean print = true;
+                    if (printDeltas) {
+                        if (firstRound)
+                            previousValues.add(intValue);
+                        else {
+                            if (previousValues.get(currentLocal) == intValue)
+                                print = false;
+                            else {
+                                previousValues.remove(currentLocal);
+                                previousValues.add(currentLocal, intValue);
+                            }
+                        }
+                        currentLocal++;
+                    }
+                    if (print)
+                        printLocal(intValue, fieldName, printDeltas);
                 } else {
-                    printLocal(field.get(local), fieldName);
+                    printLocal(field.get(local), fieldName, printDeltas);
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
+        firstRound = false;
     }
 
     private static void firstPrint(String name) {
-        if (name.contains("#LOCAL#")) {
-            System.out.print("\n" + name + "--> ");
-            str.append("\n" + name + "--> ");
-        } else {
-            System.out.print("\t" + name + ": ");
-            str.append("\t" + name + ": ");
-        }
+        if (name.contains("#LOCAL#"))
+            print(name + "==");
+        else
+            print("\t" + name + ": ");
     }
 
     public static void dumpSpecToFile(String fileName) {
         PrintWriter writer;
         try {
-            String res = Logger.getString();
             writer = new PrintWriter(fileName + ".spec", "UTF-8");
-            writer.println(res);
+            writer.println(str.toString());
             writer.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private static String getString() {
-        return str.toString();
     }
 }
