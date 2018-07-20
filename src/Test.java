@@ -1,13 +1,13 @@
 public class Test {
 
-    public void exemple_2(SLLNode head, SLLNode temp, SLLNode anotherTemp) {
+    public void example_2(SLLNode head, SLLNode temp, SLLNode anotherTemp) {
         head.data = 3;
         head.next = temp;
         head.data = 4;
         anotherTemp.data = 5;
     }
 
-    public void exemple_1(int num) {
+    public void example_1(int num) {
         int temp = num;
         num = temp;
         num++;
@@ -15,11 +15,11 @@ public class Test {
 
     public static void main(String[] args) {
         Test test = new Test();
-        test.exemple_1(2);
+        test.example_1(2);
 
         SLLNode head = new SLLNode(2, null);
         SLLNode temp = new SLLNode(1, null);
         SLLNode anotherTemp = new SLLNode(1, null);
-        test.exemple_2(head, temp, anotherTemp);
+        test.example_2(head, temp, anotherTemp);
     }
 }

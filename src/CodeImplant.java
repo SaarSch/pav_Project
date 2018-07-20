@@ -10,8 +10,14 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class CodeImplant extends BodyTransformer {
+    boolean storeDeltas, logCommands;
     static SootClass loggerClass;
     static SootMethod init, logCmd, printIntLocal, printRefLocal, dumpSpecToFile;
+
+    public CodeImplant(boolean storeDeltas, boolean logCommands) {
+        this.storeDeltas = storeDeltas;
+        this.logCommands = logCommands;
+    }
 
     @Override
     protected void internalTransform(Body body, String s, Map map) {
@@ -44,10 +50,12 @@ public class CodeImplant extends BodyTransformer {
                 Stmt invokePrintLocalsStmt = Jimple.v().newInvokeStmt(invokePrintLocals);
                 stms.insertAfter(invokePrintLocalsStmt, stm);
             }
-            // LogCmd:
-            InvokeExpr invokeLogCmd = Jimple.v().newStaticInvokeExpr(logCmd.makeRef(), StringConstant.v(stm.toString()));
-            Stmt invokeLogCmdStmt = Jimple.v().newInvokeStmt(invokeLogCmd);
-            stms.insertAfter(invokeLogCmdStmt, stm);
+            if (logCommands) {
+                // LogCmd:
+                InvokeExpr invokeLogCmd = Jimple.v().newStaticInvokeExpr(logCmd.makeRef(), StringConstant.v(stm.toString()));
+                Stmt invokeLogCmdStmt = Jimple.v().newInvokeStmt(invokeLogCmd);
+                stms.insertAfter(invokeLogCmdStmt, stm);
+            }
         }
 
         // Init logger
