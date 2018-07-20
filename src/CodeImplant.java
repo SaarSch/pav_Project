@@ -1,3 +1,4 @@
+import bgu.cs.util.Pair;
 import soot.*;
 import soot.jimple.*;
 import soot.util.Chain;
@@ -9,7 +10,7 @@ import java.util.Map;
 public class CodeImplant extends BodyTransformer {
     boolean storeDeltas, logCommands;
     static SootClass loggerClass;
-    static SootMethod init, logCmd, printIntLocal, printRefLocal, dumpSpecToFile, printStr;
+    static SootMethod init, logCmd, printIntLocal, printRefLocal, dumpSpecToFile, printStr, notifyFirstRoundFinished;
 
     public CodeImplant(boolean storeDeltas, boolean logCommands) {
         this.storeDeltas = storeDeltas;
@@ -24,20 +25,27 @@ public class CodeImplant extends BodyTransformer {
         loggerClass = Scene.v().getSootClass("Logger");
         init = loggerClass.getMethod("void init(java.lang.String)");
         logCmd = loggerClass.getMethod("void logCmd(java.lang.String)");
-        printRefLocal = loggerClass.getMethod("void printLocal(java.lang.Object,java.lang.String,boolean)");
-        printIntLocal = loggerClass.getMethod("void printLocal(int,java.lang.String,boolean)");
+        printRefLocal = loggerClass.getMethod("void printLocal(java.lang.Object,java.lang.String,boolean,boolean)");
+        printIntLocal = loggerClass.getMethod("void printLocal(int,java.lang.String,boolean,boolean)");
         dumpSpecToFile = loggerClass.getMethod("void dumpSpecToFile(java.lang.String)");
         printStr = loggerClass.getMethod("void printStr(java.lang.String)");
+        notifyFirstRoundFinished = loggerClass.getMethod("void notifyFirstRoundFinished()");
 
         Chain<Local> locals = new HashChain<>(body.getLocals());
         locals.removeFirst();
 
         PatchingChain<Unit> stms = body.getUnits();
         ArrayList<Unit> myStms = generateMyStms(stms);
+        boolean firstRound = true;
 
         for (Unit stm : myStms) {
-            addInvokeStmt(stms, stm, printStr.makeRef(), true, StringConstant.v("]"));
+            if (firstRound) {
+                firstRound = false;
+                addInvokeStmt(stms, stm, notifyFirstRoundFinished.makeRef(), false);
+            }
+            addInvokeStmt(stms, stm, printStr.makeRef(), false, StringConstant.v("]"));
             //PrintLocals:
+            ArrayList<Pair<Local, SootMethodRef>> localsToLog = new ArrayList<>();
             for (Local local : locals) {
                 SootMethodRef printLocalMethod = null;
                 if (local.getType().getClass().getName().equals("soot.IntType")) {
@@ -45,14 +53,16 @@ public class CodeImplant extends BodyTransformer {
                 } else if (local.getType().getClass().getName().equals("soot.RefType")) {
                     printLocalMethod = printRefLocal.makeRef();
                 }
-                addInvokeStmt(stms, stm, printLocalMethod, false, local, StringConstant.v("#LOCAL#_" + local.getName()), IntConstant.v(storeDeltas ? 1:0));
+                localsToLog.add(new Pair(local, printLocalMethod));
+            }
+            for (int i=localsToLog.size()-1; i >= 0; i--) {
+                Pair<Local, SootMethodRef> localPair = localsToLog.get(i);
+                addInvokeStmt(stms, stm, localPair.second, false, localPair.first, StringConstant.v("#LOCAL#_" + localPair.first.getName()), IntConstant.v(storeDeltas ? 1:0), IntConstant.v(i==localsToLog.size()-1 ? 1:0));
             }
             addInvokeStmt(stms, stm, printStr.makeRef(), false, StringConstant.v(" // ["));
 
-            if (logCommands) {
-                // LogCmd:
-                addInvokeStmt(stms, stm, logCmd.makeRef(), false, StringConstant.v(stm.toString()));
-            }
+            if (logCommands)
+                addInvokeStmt(stms, stm, logCmd.makeRef(), false, StringConstant.v(stm.toString())); // LogCmd
         }
 
         // Init logger

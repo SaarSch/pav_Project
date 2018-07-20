@@ -11,24 +11,26 @@ public class Logger {
         System.out.print(s);
         str.append(s);
     }
+
+    public static void notifyFirstRoundFinished() {
+        firstRound = false;
+    }
     public static void init(String function_name) {
         print("\n\n*** Method: " + function_name + " ***");
     }
-
     public static void logCmd(String cmd) {
         print("\n" + cmd + ";");
     }
-
     public static void printStr(String str) {
         print(str);
     }
 
-    public static void printLocal(int local, String name, boolean printDeltas) {
+    public static void printLocal(int local, String name, boolean printDeltas, boolean isLastLocal) {
         firstPrint(name);
-        print(local + " && ");
+        print(local + (isLastLocal? "":" && "));
     }
 
-    public static void printLocal(Object local, String name, boolean printDeltas) {
+    public static void printLocal(Object local, String name, boolean printDeltas, boolean isLastLocal) {
         firstPrint(name);
         if (null == local) {
             print("null");
@@ -59,9 +61,9 @@ public class Logger {
                         currentLocal++;
                     }
                     if (print)
-                        printLocal(intValue, fieldName, printDeltas);
+                        printLocal(intValue, fieldName, printDeltas, isLastLocal);
                 } else {
-                    printLocal(field.get(local), fieldName, printDeltas);
+                    printLocal(field.get(local), fieldName, printDeltas, isLastLocal);
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -72,7 +74,7 @@ public class Logger {
 
     private static void firstPrint(String name) {
         if (name.contains("#LOCAL#"))
-            print(name + "==");
+            print(name.substring(8) + "==");
         else
             print("\t" + name + ": ");
     }
