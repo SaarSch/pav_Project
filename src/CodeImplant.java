@@ -57,7 +57,7 @@ public class CodeImplant extends BodyTransformer {
             }
             for (int i=localsToLog.size()-1; i >= 0; i--) {
                 Pair<Local, SootMethodRef> localPair = localsToLog.get(i);
-                addInvokeStmt(stms, stm, localPair.second, false, localPair.first, StringConstant.v("#LOCAL#_" + localPair.first.getName()), IntConstant.v(storeDeltas ? 1:0), IntConstant.v(i==localsToLog.size()-1 ? 1:0));
+                addInvokeStmt(stms, stm, localPair.second, false, localPair.first, StringConstant.v("#LOCAL#_" + localPair.first.getName()), IntConstant.v(storeDeltas ? 1:0), IntConstant.v(i==0 ? 1:0));
             }
             addInvokeStmt(stms, stm, printStr.makeRef(), false, StringConstant.v(" // ["));
 
@@ -69,7 +69,6 @@ public class CodeImplant extends BodyTransformer {
         addInvokeStmt(stms, myStms.get(0), init.makeRef(), true, StringConstant.v(body.getMethod().getName()));
         // Write to file:
         addInvokeStmt(stms, stms.getLast(), dumpSpecToFile.makeRef(), true, StringConstant.v("Test_Result"));
-
     }
 
     private void addInvokeStmt(PatchingChain<Unit> stms, Unit stm, SootMethodRef method, boolean before, Value... values) {

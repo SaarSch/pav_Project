@@ -1,10 +1,13 @@
+import soot.Local;
+
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Logger {
     private static StringBuilder str = new StringBuilder();
-    private static ArrayList<Integer> previousValues = new ArrayList<>();
+    private static HashMap<String, Integer> currentState = new HashMap<>();
     private static boolean firstRound = true;
 
     public static void print(String s) {
@@ -17,6 +20,8 @@ public class Logger {
     }
     public static void init(String function_name) {
         print("\n\n*** Method: " + function_name + " ***");
+        firstRound = true;
+        currentState.clear();
     }
     public static void logCmd(String cmd) {
         print("\n" + cmd + ";");
@@ -25,20 +30,29 @@ public class Logger {
         print(str);
     }
 
-    public static void printLocal(int local, String name, boolean printDeltas, boolean isLastLocal) {
-        firstPrint(name);
-        print(local + (isLastLocal? "":" && "));
+    public static void printLocal(int local, String name, boolean printDeltas, boolean isFirstLocal) {
+        if (printDeltas) {
+            if (!firstRound) {
+                if (currentState.get(name) != local) {
+                    firstPrint(name, isFirstLocal);
+                    print(local + " ");
+                }
+                return;
+            }
+            currentState.put(name, local); // record previous state
+        }
+        firstPrint(name, isFirstLocal);
+        print(local + " ");
     }
 
-    public static void printLocal(Object local, String name, boolean printDeltas, boolean isLastLocal) {
-        firstPrint(name);
+    public static void printLocal(Object local, String name, boolean printDeltas, boolean isFirstLocal) {
+        firstPrint(name, isFirstLocal);
         if (null == local) {
             print("null");
             return;
         }
-        print(local + "");
+        print(local + " ");
 
-        int currentLocal = 0;
         Field fields[] = local.getClass().getDeclaredFields();
         for (Field field : fields) {
             try {
@@ -46,37 +60,23 @@ public class Logger {
                 String fieldName = field.getName();
                 if (fieldType.equals("int")) {
                     int intValue = (int) field.get(local);
-                    boolean print = true;
-                    if (printDeltas) {
-                        if (firstRound)
-                            previousValues.add(intValue);
-                        else {
-                            if (previousValues.get(currentLocal) == intValue)
-                                print = false;
-                            else {
-                                previousValues.remove(currentLocal);
-                                previousValues.add(currentLocal, intValue);
-                            }
-                        }
-                        currentLocal++;
-                    }
-                    if (print)
-                        printLocal(intValue, fieldName, printDeltas, isLastLocal);
+                    printLocal(intValue, fieldName, printDeltas, isFirstLocal);
                 } else {
-                    printLocal(field.get(local), fieldName, printDeltas, isLastLocal);
+                    printLocal(field.get(local), fieldName, printDeltas, isFirstLocal);
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
+            //print("\n");
         }
-        firstRound = false;
     }
 
-    private static void firstPrint(String name) {
+    private static void firstPrint(String name, boolean isFirstLocal) {
+        print((isFirstLocal? "":"&& "));
         if (name.contains("#LOCAL#"))
             print(name.substring(8) + "==");
         else
-            print("\t" + name + ": ");
+            print(name + "-->");
     }
 
     public static void dumpSpecToFile(String fileName) {
