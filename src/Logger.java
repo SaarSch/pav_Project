@@ -12,7 +12,7 @@ public class Logger {
 
     public static void addToSpec(String s) {
         if (s.equals("]")) {
-            handleNewLocals("#LOCAL#");
+            handleNewLocals("", true);
         }
         str.append(s);
     }
@@ -31,12 +31,12 @@ public class Logger {
     }
 
     public static void printLocal(int localValue, String localName) {
-        handleNewLocals(localName);
+        handleNewLocals(localName, false);
         currentLocalStr.append(" " + localName + " = " + localValue);
     }
 
     public static void printLocal(Object localValue, String localName) {
-        handleNewLocals(localName);
+        handleNewLocals(localName, false);
         if (null == localValue) {
             currentLocalStr.append(" " + localName + " = " + "null");
             return;
@@ -76,9 +76,12 @@ public class Logger {
     }
 
 
-    private static void handleNewLocals(String localName) {
-        if (!localName.contains("#LOCAL#")) return;
+    private static void handleNewLocals(String localName, boolean calledAfterCloseBracket) {
+        if (!calledAfterCloseBracket && !localName.contains("#LOCAL#")) return;
         if (!storeDeltas || isCurrentLocalStrNew()) {
+            if (!calledAfterCloseBracket && currentLocalStr.length() > 2) {
+                currentLocalStr.append(" |");
+            }
             addToSpec(currentLocalStr);
         }
         localNameToStr.put(currentLocalName, currentLocalStr); // record previous state
