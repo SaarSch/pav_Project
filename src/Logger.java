@@ -1,82 +1,89 @@
-import soot.Local;
-
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Logger {
     private static StringBuilder str = new StringBuilder();
-    private static HashMap<String, Integer> currentState = new HashMap<>();
-    private static boolean firstRound = true;
+    private static HashMap<String, StringBuilder> localNameToStr = new HashMap<>();
+    private static StringBuilder currentLocalStr = new StringBuilder();
+    private static String currentLocalName = "";
+    public static boolean storeDeltas = false;
+    public static boolean logCommands = true;
 
-    public static void print(String s) {
-        System.out.print(s);
+    public static void addToSpec(String s) {
+        if (s.equals("]")) {
+            handleNewLocals("#LOCAL#");
+        }
         str.append(s);
     }
 
-    public static void notifyFirstRoundFinished() {
-        firstRound = false;
+    public static void init(String functionName, int storeDeltas, int logCommands) {
+        addToSpec("\n\n*** Method: " + functionName + " ***");
+        Logger.storeDeltas = storeDeltas == 1;
+        Logger.logCommands = logCommands == 1;
+        clearVars();
     }
-    public static void init(String function_name) {
-        print("\n\n*** Method: " + function_name + " ***");
-        firstRound = true;
-        currentState.clear();
-    }
+
     public static void logCmd(String cmd) {
-        print("\n" + cmd + ";");
-    }
-    public static void printStr(String str) {
-        print(str);
-    }
-
-    public static void printLocal(int local, String name, boolean printDeltas, boolean isFirstLocal) {
-        if (printDeltas) {
-            if (!firstRound) {
-                if (currentState.get(name) != local) {
-                    firstPrint(name, isFirstLocal);
-                    print(local + " ");
-                }
-                return;
-            }
-            currentState.put(name, local); // record previous state
+        if (logCommands) {
+            addToSpec("\n" + cmd + ";");
         }
-        firstPrint(name, isFirstLocal);
-        print(local + " ");
     }
 
-    public static void printLocal(Object local, String name, boolean printDeltas, boolean isFirstLocal) {
-        firstPrint(name, isFirstLocal);
-        if (null == local) {
-            print("null");
+    public static void printLocal(int localValue, String localName) {
+        handleNewLocals(localName);
+        currentLocalStr.append(" " + localName + " = " + localValue);
+    }
+
+    public static void printLocal(Object localValue, String localName) {
+        handleNewLocals(localName);
+        if (null == localValue) {
+            currentLocalStr.append(" " + localName + " = " + "null");
             return;
         }
-        print(local + " ");
-
-        Field fields[] = local.getClass().getDeclaredFields();
+        currentLocalStr.append(" " + localName + " = " + localValue);
+        Field fields[] = localValue.getClass().getDeclaredFields();
         for (Field field : fields) {
             try {
                 String fieldType = field.getType().toString();
                 String fieldName = field.getName();
                 if (fieldType.equals("int")) {
-                    int intValue = (int) field.get(local);
-                    printLocal(intValue, fieldName, printDeltas, isFirstLocal);
+                    int intValue = (int) field.get(localValue);
+                    printLocal(intValue, fieldName);
                 } else {
-                    printLocal(field.get(local), fieldName, printDeltas, isFirstLocal);
+                    printLocal(field.get(localValue), fieldName);
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-            //print("\n");
         }
     }
 
-    private static void firstPrint(String name, boolean isFirstLocal) {
-        print((isFirstLocal? "":"&& "));
-        if (name.contains("#LOCAL#"))
-            print(name.substring(8) + "==");
-        else
-            print(name + "-->");
+    private static void addToSpec(StringBuilder s) {
+        str.append(s);
+    }
+
+
+    private static void clearVars() {
+        localNameToStr.clear();
+        currentLocalStr = new StringBuilder();
+        currentLocalName = "";
+    }
+
+
+    private static Boolean isCurrentLocalStrNew() {
+        return !localNameToStr.containsKey(currentLocalName) || !localNameToStr.get(currentLocalName).equals(currentLocalStr);
+    }
+
+
+    private static void handleNewLocals(String localName) {
+        if (!localName.contains("#LOCAL#")) return;
+        if (!storeDeltas || isCurrentLocalStrNew()) {
+            addToSpec(currentLocalStr);
+        }
+        localNameToStr.put(currentLocalName, currentLocalStr); // record previous state
+        currentLocalStr = new StringBuilder();
+        currentLocalName = localName;
     }
 
     public static void dumpSpecToFile(String fileName) {

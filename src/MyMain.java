@@ -3,7 +3,6 @@ import soot.Scene;
 import soot.SootClass;
 import soot.Transform;
 
-import java.io.File;
 import java.util.Arrays;
 
 public class MyMain {
@@ -11,7 +10,7 @@ public class MyMain {
     public static void main(String[] args) {
         boolean storeDeltas = false, logCommands = true;
         int extraArgs = 0;
-        for (int i=0; i < args.length; i++) {
+        for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-deltas")) {
                 storeDeltas = true;
                 extraArgs++;
@@ -27,7 +26,7 @@ public class MyMain {
         System.setProperty("sun.boot.class.path", s);
         System.setProperty("java.ext.dirs", s);
         Scene.v().addBasicClass("Logger", SootClass.SIGNATURES);
-        String[] sootArgs = Arrays.copyOfRange(args, 0, args.length-extraArgs);
+        String[] sootArgs = Arrays.copyOfRange(args, 0, args.length - extraArgs);
         soot.Main.main(sootArgs);
     }
 }
