@@ -7,8 +7,8 @@ public class Logger {
     private static HashMap<String, StringBuilder> localNameToStr = new HashMap<>();
     private static StringBuilder currentLocalStr = new StringBuilder();
     private static String currentLocalName = "";
-    public static boolean storeDeltas = false;
-    public static boolean logCommands = true;
+    private static boolean storeDeltas = false, logCommands = true;
+    private static String seperator = " &&";
 
     public static void addToSpec(String s) {
         if (s.equals("]")) {
@@ -49,9 +49,9 @@ public class Logger {
                 String fieldName = field.getName();
                 if (fieldType.equals("int")) {
                     int intValue = (int) field.get(localValue);
-                    printLocal(intValue, fieldName);
+                    printLocal(intValue, localName + "." + fieldName);
                 } else {
-                    printLocal(field.get(localValue), fieldName);
+                    printLocal(field.get(localValue), localName + "." + fieldName);
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -80,8 +80,8 @@ public class Logger {
     }
 
     private static boolean equalsLocalStrings(String str1, String str2) {
-        str1 = str1.replace(" |" , "");
-        str2 = str2.replace(" |" , "");
+        str1 = str1.replace(seperator , "");
+        str2 = str2.replace(seperator , "");
         return str1.equals(str2);
     }
 
@@ -89,7 +89,7 @@ public class Logger {
         if (!calledAfterCloseBracket && !localName.contains("#LOCAL#")) return;
         if (!storeDeltas || isCurrentLocalStrNew()) {
             if (!calledAfterCloseBracket && currentLocalStr.length() > 2) {
-                currentLocalStr.append(" |");
+                currentLocalStr.append(seperator);
             }
             addToSpec(currentLocalStr);
         }
@@ -102,7 +102,10 @@ public class Logger {
         PrintWriter writer;
         try {
             writer = new PrintWriter(fileName + ".spec", "UTF-8");
-            writer.println(str.toString());
+            String stringToWrite = str.toString();
+            while (stringToWrite.contains(seperator + "]"))
+                stringToWrite = stringToWrite.replace(seperator + "]", " ]");
+            writer.println(stringToWrite);
             writer.close();
         } catch (Exception e) {
             e.printStackTrace();

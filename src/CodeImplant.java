@@ -38,11 +38,9 @@ public class CodeImplant extends BodyTransformer {
         ArrayList<Unit> myStms = generateMyStms(stms);
 
         for (Unit stm : myStms) {
-
-            //PrintLocals:
+            // Print locals
             printLocals(locals, stms, stm);
-
-            //Log Cmd
+            // Log command
             addInvokeStmt(stms, stm, logCmd.makeRef(), false, StringConstant.v(stm.toString()));
         }
 
