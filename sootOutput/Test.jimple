@@ -115,239 +115,129 @@ public class Test extends java.lang.Object
     }
 
 /*16*/
-    public void factorial(int)
-    {
-        Test this;
-        int x, y;
-        java.io.PrintStream $r0;
-
-        this := @this: Test;
-/*17*/
-        x := @parameter0: int;
-/*17*/
-        staticinvoke <Logger: void init(java.lang.String,boolean,boolean)>("factorial", 1, 1);
-        y = 1;
-/*17*/
-/*17*/
-        staticinvoke <Logger: void addToSpec(java.lang.String)>("[");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(x, "#LOCAL#_x");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" ]");
-        staticinvoke <Logger: void logCmd(java.lang.String)>("y = 1");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" // [");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(x, "#LOCAL#_x");
-        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>($r0, "#LOCAL#_$r0");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(y, "#LOCAL#_y");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" ]");
-
-     label0:
-        if x == 1 goto label1;
-/*18*/
-
-        staticinvoke <Logger: void logCmd(java.lang.String)>("if x == 1 goto $r0 = <java.lang.System: java.io.PrintStream out>");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" // [");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(x, "#LOCAL#_x");
-        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>($r0, "#LOCAL#_$r0");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(y, "#LOCAL#_y");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" ]");
-        y = y * x;
-/*19*/
-/*19*/
-        staticinvoke <Logger: void logCmd(java.lang.String)>("y = y * x");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" // [");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(x, "#LOCAL#_x");
-        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>($r0, "#LOCAL#_$r0");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(y, "#LOCAL#_y");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" ]");
-        x = x - 1;
-/*20*/
-/*20*/
-        staticinvoke <Logger: void logCmd(java.lang.String)>("x = x - 1");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" // [");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(x, "#LOCAL#_x");
-        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>($r0, "#LOCAL#_$r0");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(y, "#LOCAL#_y");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" ]");
-        goto label0;
-/*20*/
-
-        staticinvoke <Logger: void logCmd(java.lang.String)>("goto [?= (branch)]");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" // [");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(x, "#LOCAL#_x");
-        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>($r0, "#LOCAL#_$r0");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(y, "#LOCAL#_y");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" ]");
-
-     label1:
-        $r0 = <java.lang.System: java.io.PrintStream out>;
-/*22*/
-        staticinvoke <Logger: void logCmd(java.lang.String)>("$r0 = <java.lang.System: java.io.PrintStream out>");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" // [");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(x, "#LOCAL#_x");
-        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>($r0, "#LOCAL#_$r0");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(y, "#LOCAL#_y");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" ]");
-        virtualinvoke $r0.<java.io.PrintStream: void println(int)>(y);
-/*22*/
-        staticinvoke <Logger: void logCmd(java.lang.String)>("virtualinvoke $r0.<java.io.PrintStream: void println(int)>(y)");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" // [");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(x, "#LOCAL#_x");
-        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>($r0, "#LOCAL#_$r0");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(y, "#LOCAL#_y");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" ]");
-        staticinvoke <Logger: void dumpSpecToFile(java.lang.String)>("Test_Result");
-        return;
-/*23*/
-    }
-
-/*25*/
-    public void gcd(int, int)
+    public int gcd(int, int)
     {
         Test this;
         int a, b;
-        java.io.PrintStream $r0;
 
         this := @this: Test;
-/*26*/
+/*17*/
         a := @parameter0: int;
-/*26*/
+/*17*/
         b := @parameter1: int;
-/*26*/
+/*17*/
 
      label0:
         staticinvoke <Logger: void init(java.lang.String,boolean,boolean)>("gcd", 1, 1);
         if a == b goto label2;
-/*26*/
+/*17*/
 
         staticinvoke <Logger: void addToSpec(java.lang.String)>("[");
         staticinvoke <Logger: void printLocal(int,java.lang.String)>(a, "#LOCAL#_a");
         staticinvoke <Logger: void printLocal(int,java.lang.String)>(b, "#LOCAL#_b");
         staticinvoke <Logger: void addToSpec(java.lang.String)>(" ]");
-        staticinvoke <Logger: void logCmd(java.lang.String)>("if a == b goto $r0 = <java.lang.System: java.io.PrintStream out>");
+        staticinvoke <Logger: void logCmd(java.lang.String)>("if a == b goto return a");
         staticinvoke <Logger: void addToSpec(java.lang.String)>(" // [");
         staticinvoke <Logger: void printLocal(int,java.lang.String)>(a, "#LOCAL#_a");
         staticinvoke <Logger: void printLocal(int,java.lang.String)>(b, "#LOCAL#_b");
-        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>($r0, "#LOCAL#_$r0");
         staticinvoke <Logger: void addToSpec(java.lang.String)>(" ]");
         if a <= b goto label1;
-/*27*/
+/*18*/
 
         staticinvoke <Logger: void logCmd(java.lang.String)>("if a <= b goto b = b - a");
         staticinvoke <Logger: void addToSpec(java.lang.String)>(" // [");
         staticinvoke <Logger: void printLocal(int,java.lang.String)>(a, "#LOCAL#_a");
         staticinvoke <Logger: void printLocal(int,java.lang.String)>(b, "#LOCAL#_b");
-        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>($r0, "#LOCAL#_$r0");
         staticinvoke <Logger: void addToSpec(java.lang.String)>(" ]");
         a = a - b;
-/*28*/
-/*28*/
+/*19*/
+/*19*/
         staticinvoke <Logger: void logCmd(java.lang.String)>("a = a - b");
         staticinvoke <Logger: void addToSpec(java.lang.String)>(" // [");
         staticinvoke <Logger: void printLocal(int,java.lang.String)>(a, "#LOCAL#_a");
         staticinvoke <Logger: void printLocal(int,java.lang.String)>(b, "#LOCAL#_b");
-        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>($r0, "#LOCAL#_$r0");
         staticinvoke <Logger: void addToSpec(java.lang.String)>(" ]");
         goto label0;
-/*28*/
+/*19*/
 
         staticinvoke <Logger: void logCmd(java.lang.String)>("goto [?= (branch)]");
         staticinvoke <Logger: void addToSpec(java.lang.String)>(" // [");
         staticinvoke <Logger: void printLocal(int,java.lang.String)>(a, "#LOCAL#_a");
         staticinvoke <Logger: void printLocal(int,java.lang.String)>(b, "#LOCAL#_b");
-        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>($r0, "#LOCAL#_$r0");
         staticinvoke <Logger: void addToSpec(java.lang.String)>(" ]");
 
      label1:
         b = b - a;
-/*30*/
-/*30*/
+/*21*/
+/*21*/
         staticinvoke <Logger: void logCmd(java.lang.String)>("b = b - a");
         staticinvoke <Logger: void addToSpec(java.lang.String)>(" // [");
         staticinvoke <Logger: void printLocal(int,java.lang.String)>(a, "#LOCAL#_a");
         staticinvoke <Logger: void printLocal(int,java.lang.String)>(b, "#LOCAL#_b");
-        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>($r0, "#LOCAL#_$r0");
         staticinvoke <Logger: void addToSpec(java.lang.String)>(" ]");
         goto label0;
-/*30*/
+/*21*/
 
         staticinvoke <Logger: void logCmd(java.lang.String)>("goto [?= (branch)]");
         staticinvoke <Logger: void addToSpec(java.lang.String)>(" // [");
         staticinvoke <Logger: void printLocal(int,java.lang.String)>(a, "#LOCAL#_a");
         staticinvoke <Logger: void printLocal(int,java.lang.String)>(b, "#LOCAL#_b");
-        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>($r0, "#LOCAL#_$r0");
         staticinvoke <Logger: void addToSpec(java.lang.String)>(" ]");
 
      label2:
-        $r0 = <java.lang.System: java.io.PrintStream out>;
-/*32*/
-        staticinvoke <Logger: void logCmd(java.lang.String)>("$r0 = <java.lang.System: java.io.PrintStream out>");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" // [");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(a, "#LOCAL#_a");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(b, "#LOCAL#_b");
-        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>($r0, "#LOCAL#_$r0");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" ]");
-        virtualinvoke $r0.<java.io.PrintStream: void println(int)>(a);
-/*32*/
-        staticinvoke <Logger: void logCmd(java.lang.String)>("virtualinvoke $r0.<java.io.PrintStream: void println(int)>(a)");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" // [");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(a, "#LOCAL#_a");
-        staticinvoke <Logger: void printLocal(int,java.lang.String)>(b, "#LOCAL#_b");
-        staticinvoke <Logger: void printLocal(java.lang.Object,java.lang.String)>($r0, "#LOCAL#_$r0");
-        staticinvoke <Logger: void addToSpec(java.lang.String)>(" ]");
         staticinvoke <Logger: void dumpSpecToFile(java.lang.String)>("Test_Result");
-        return;
-/*33*/
+        return a;
+/*23*/
     }
 
-/*46*/
+/*45*/
     public static void main(java.lang.String[])
     {
         java.lang.String[] args;
         java.lang.Object test, head, temp, anotherTemp;
-        Test tmp$1154821602, tmp;
-        SLLNode tmp$945834881, tmp$1939022383, tmp$833474933, tmp, tmp, tmp;
+        Test tmp$1311844206, tmp;
+        SLLNode tmp$668312960, tmp$1581267786, tmp$1541708640, tmp, tmp, tmp;
 
         args := @parameter0: java.lang.String[];
-/*47*/
-        tmp$1154821602 = new Test;
-/*47*/
-        specialinvoke tmp$1154821602.<Test: void <init>()>();
-/*47*/
-        test = tmp$1154821602;
-/*47*/
+/*46*/
+        tmp$1311844206 = new Test;
+/*46*/
+        specialinvoke tmp$1311844206.<Test: void <init>()>();
+/*46*/
+        test = tmp$1311844206;
+/*46*/
         tmp = (Test) test;
         virtualinvoke tmp.<Test: void simpleNumericTest(int)>(2);
-/*50*/
+/*49*/
         tmp = (Test) test;
-        virtualinvoke tmp.<Test: void factorial(int)>(5);
+        virtualinvoke tmp.<Test: int gcd(int,int)>(3, 54);
 /*51*/
-        tmp = (Test) test;
-        virtualinvoke tmp.<Test: void gcd(int,int)>(3, 54);
-/*52*/
-        tmp$945834881 = new SLLNode;
+/*51*/
+        tmp$668312960 = new SLLNode;
+/*54*/
+        specialinvoke tmp$668312960.<SLLNode: void <init>(int,SLLNode)>(2, null);
+/*54*/
+        head = tmp$668312960;
+/*54*/
+        tmp$1581267786 = new SLLNode;
 /*55*/
-        specialinvoke tmp$945834881.<SLLNode: void <init>(int,SLLNode)>(2, null);
+        specialinvoke tmp$1581267786.<SLLNode: void <init>(int,SLLNode)>(1, null);
 /*55*/
-        head = tmp$945834881;
+        temp = tmp$1581267786;
 /*55*/
-        tmp$1939022383 = new SLLNode;
+        tmp$1541708640 = new SLLNode;
 /*56*/
-        specialinvoke tmp$1939022383.<SLLNode: void <init>(int,SLLNode)>(1, null);
+        specialinvoke tmp$1541708640.<SLLNode: void <init>(int,SLLNode)>(1, null);
 /*56*/
-        temp = tmp$1939022383;
+        anotherTemp = tmp$1541708640;
 /*56*/
-        tmp$833474933 = new SLLNode;
-/*57*/
-        specialinvoke tmp$833474933.<SLLNode: void <init>(int,SLLNode)>(1, null);
-/*57*/
-        anotherTemp = tmp$833474933;
-/*57*/
         tmp = (Test) test;
         tmp = (SLLNode) head;
         tmp = (SLLNode) temp;
         tmp = (SLLNode) anotherTemp;
         virtualinvoke tmp.<Test: void simpleSLL(SLLNode,SLLNode,SLLNode)>(tmp, tmp, tmp);
-/*58*/
+/*57*/
         return;
-/*60*/
+/*59*/
     }
 }

@@ -13,26 +13,26 @@ public class Test {
         num++;
     }
 
-    /*public void factorial(int x) {
-        int y = 1;
-        while (x != 1) {
-            y = y * x;
-            x = x - 1;
-        }
-        System.out.println(y);
-    }
-
-    public void gcd(int a, int b) {
+    public int gcd(int a, int b) {
         while (a != b) {
             if (a > b)
                 a = a - b;
             else
                 b = b - a;
         }
-        System.out.println(a);
+        return a;
     }
 
-    public void findMax(SLLNode head) {
+    public int factorial(int x) {
+        int y = 1;
+        while (x != 1) {
+            y = y * x;
+            x = x - 1;
+        }
+        return y;
+    }
+
+    /*public int findMax(SLLNode head) {
         SLLNode t = head;
         int max = head.data;
         while (t != null) {
@@ -40,7 +40,7 @@ public class Test {
                 max = t.data;
             t = t.next;
         }
-        System.out.println(max);
+        return max;
     }*/
 
     public static void main(String[] args) {
@@ -48,14 +48,14 @@ public class Test {
 
         // Numeric tests:
         test.simpleNumericTest(2);
-        //test.factorial(5);
-        //test.gcd(3, 54);
+        int fact = test.factorial(5);
+        int gcd = test.gcd(3, 54);
 
         // SLL tests:
         SLLNode head = new SLLNode(2, null);
         SLLNode temp = new SLLNode(1, null);
         SLLNode anotherTemp = new SLLNode(1, null);
         test.simpleSLL(head, temp, anotherTemp);
-        //test.findMax(head);
+        //int max = test.findMax(head);
     }
 }
