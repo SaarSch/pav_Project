@@ -25,7 +25,7 @@ public class CodeImplant extends BodyTransformer {
             return;
         }
         loggerClass = Scene.v().getSootClass("Logger");
-        init = loggerClass.getMethod("void init(java.lang.String,int,int)");
+        init = loggerClass.getMethod("void init(java.lang.String,boolean,boolean)");
         logCmd = loggerClass.getMethod("void logCmd(java.lang.String)");
         printRefLocal = loggerClass.getMethod("void printLocal(java.lang.Object,java.lang.String)");
         printIntLocal = loggerClass.getMethod("void printLocal(int,java.lang.String)");
@@ -58,7 +58,8 @@ public class CodeImplant extends BodyTransformer {
 
         for (Local local : locals) {
             SootMethodRef printLocalMethod = null;
-            if (local.getType().getClass().getName().equals("soot.IntType")) {
+            if (local.getType().getClass().getName().equals("soot.IntType") ||
+                    local.getType().getClass().getName().equals("soot.ByteType")) {
                 printLocalMethod = printIntLocal.makeRef();
             } else if (local.getType().getClass().getName().equals("soot.RefType")) {
                 printLocalMethod = printRefLocal.makeRef();

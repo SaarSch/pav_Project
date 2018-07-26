@@ -17,10 +17,10 @@ public class Logger {
         str.append(s);
     }
 
-    public static void init(String functionName, int storeDeltas, int logCommands) {
+    public static void init(String functionName, boolean storeDeltas, boolean logCommands) {
         addToSpec("\n\n*** Method: " + functionName + " ***");
-        Logger.storeDeltas = storeDeltas == 1;
-        Logger.logCommands = logCommands == 1;
+        Logger.storeDeltas = storeDeltas;
+        Logger.logCommands = logCommands;
         clearVars();
     }
 
@@ -60,9 +60,8 @@ public class Logger {
     }
 
     private static void addToSpec(StringBuilder s) {
-        str.append(s);
+        str.append(s.toString().replaceAll("#LOCAL#_", ""));
     }
-
 
     private static void clearVars() {
         localNameToStr.clear();
@@ -70,11 +69,21 @@ public class Logger {
         currentLocalName = "";
     }
 
-
     private static Boolean isCurrentLocalStrNew() {
-        return !localNameToStr.containsKey(currentLocalName) || !localNameToStr.get(currentLocalName).equals(currentLocalStr);
+        if (localNameToStr.containsKey(currentLocalName)) {
+            String str1 = localNameToStr.get(currentLocalName).toString();
+            String str2 = currentLocalStr.toString();
+            if (equalsLocalStrings(str1, str2))
+                return false;
+        }
+        return true;
     }
 
+    private static boolean equalsLocalStrings(String str1, String str2) {
+        str1 = str1.replace(" |" , "");
+        str2 = str2.replace(" |" , "");
+        return str1.equals(str2);
+    }
 
     private static void handleNewLocals(String localName, boolean calledAfterCloseBracket) {
         if (!calledAfterCloseBracket && !localName.contains("#LOCAL#")) return;
