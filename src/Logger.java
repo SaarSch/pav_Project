@@ -7,21 +7,24 @@ public class Logger {
     private static HashMap<String, StringBuilder> localNameToStr = new HashMap<>();
     private static StringBuilder currentLocalStr = new StringBuilder();
     private static String currentLocalName = "";
-    private static boolean storeDeltas = false, logCommands = true;
-    private static String seperator = " &&";
+    private static boolean storeDeltas = false, logCommands = true, initialized = false;
+    private static String separator = " &&";
 
     public static void addToSpec(String s) {
-        if (s.equals("]")) {
+        if (s.equals(" ]")) {
             handleNewLocals("", true);
         }
         str.append(s);
     }
 
     public static void init(String functionName, boolean storeDeltas, boolean logCommands) {
-        addToSpec("\n\n*** Method: " + functionName + " ***");
-        Logger.storeDeltas = storeDeltas;
-        Logger.logCommands = logCommands;
-        clearVars();
+        if (!Logger.initialized) {
+            addToSpec("\n\n*** Method: " + functionName + " ***\n");
+            Logger.storeDeltas = storeDeltas;
+            Logger.logCommands = logCommands;
+            Logger.initialized = true;
+            clearVars();
+        }
     }
 
     public static void logCmd(String cmd) {
@@ -80,8 +83,9 @@ public class Logger {
     }
 
     private static boolean equalsLocalStrings(String str1, String str2) {
-        str1 = str1.replace(seperator , "");
-        str2 = str2.replace(seperator , "");
+        str1 = str1.replace(separator, "");
+        str2 = str2.replace(separator, "");
+        //System.out.println("Comparing |" + str1 + "| and |" + str2 + "|");
         return str1.equals(str2);
     }
 
@@ -89,11 +93,14 @@ public class Logger {
         if (!calledAfterCloseBracket && !localName.contains("#LOCAL#")) return;
         if (!storeDeltas || isCurrentLocalStrNew()) {
             if (!calledAfterCloseBracket && currentLocalStr.length() > 2) {
-                currentLocalStr.append(seperator);
+                currentLocalStr.append(separator);
             }
             addToSpec(currentLocalStr);
         }
-        localNameToStr.put(currentLocalName, currentLocalStr); // record previous state
+        if (!currentLocalName.equals("")) {
+            //System.out.println("Adding to map: " + currentLocalName + ":" + currentLocalStr.toString());
+            localNameToStr.put(currentLocalName, currentLocalStr); // record previous state
+        }
         currentLocalStr = new StringBuilder();
         currentLocalName = localName;
     }
@@ -103,12 +110,13 @@ public class Logger {
         try {
             writer = new PrintWriter(fileName + ".spec", "UTF-8");
             String stringToWrite = str.toString();
-            while (stringToWrite.contains(seperator + "]"))
-                stringToWrite = stringToWrite.replace(seperator + "]", " ]");
+            while (stringToWrite.contains(separator + " ]"))
+                stringToWrite = stringToWrite.replace(separator + " ]", " ]");
             writer.println(stringToWrite);
             writer.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        initialized = false;
     }
 }

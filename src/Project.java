@@ -5,7 +5,7 @@ import soot.Transform;
 
 import java.util.Arrays;
 
-public class MyMain {
+public class Project {
 
     public static void main(String[] args) {
         boolean storeDeltas = false, logCommands = true;

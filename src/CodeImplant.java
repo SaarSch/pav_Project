@@ -1,13 +1,9 @@
-import bgu.cs.util.Pair;
 import soot.*;
 import soot.jimple.*;
 import soot.util.Chain;
 import soot.util.HashChain;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CodeImplant extends BodyTransformer {
     static SootClass loggerClass;
@@ -33,26 +29,29 @@ public class CodeImplant extends BodyTransformer {
         addToSpec = loggerClass.getMethod("void addToSpec(java.lang.String)");
 
         List<Local> locals = getLocals(body);
-
+        int argCount = body.getMethod().getParameterCount();
+        int localCount = body.getLocalCount()-1; // without counting 'this'
+        List<Local> methodArgs = locals.subList(localCount - argCount, localCount);
         PatchingChain<Unit> stms = body.getUnits();
         ArrayList<Unit> myStms = generateMyStms(stms);
 
         for (Unit stm : myStms) {
             // Print locals
-            printLocals(locals, stms, stm);
+            printLocals(locals, stms, stm, true);
             // Log command
             addInvokeStmt(stms, stm, logCmd.makeRef(), false, StringConstant.v(stm.toString()));
         }
 
         // Init logger
         addInvokeStmt(stms, myStms.get(0), init.makeRef(), true, StringConstant.v(body.getMethod().getName()), IntConstant.v(storeDeltas ? 1 : 0), IntConstant.v(logCommands ? 1 : 0));
-
+        // Print method arguments as initial method state
+        printLocals(methodArgs, stms, myStms.get(0), false);
         // Write to file:
         addInvokeStmt(stms, stms.getLast(), dumpSpecToFile.makeRef(), true, StringConstant.v("Test_Result"));
     }
 
-    private void printLocals(List<Local> locals, PatchingChain<Unit> stms, Unit stm) {
-        addInvokeStmt(stms, stm, addToSpec.makeRef(), false, StringConstant.v("]"));
+    private void printLocals(List<Local> locals, PatchingChain<Unit> stms, Unit stm, boolean asComment) {
+        addInvokeStmt(stms, stm, addToSpec.makeRef(), false, StringConstant.v(" ]"));
 
         for (Local local : locals) {
             SootMethodRef printLocalMethod = null;
@@ -65,7 +64,7 @@ public class CodeImplant extends BodyTransformer {
             addInvokeStmt(stms, stm, printLocalMethod, false, local, StringConstant.v("#LOCAL#_" + local.getName()));
         }
 
-        addInvokeStmt(stms, stm, addToSpec.makeRef(), false, StringConstant.v(" // ["));
+        addInvokeStmt(stms, stm, addToSpec.makeRef(), false, StringConstant.v(asComment? " // [":"["));
     }
 
     private List<Local> getLocals(Body body) {
