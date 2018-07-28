@@ -1,4 +1,4 @@
-public class Test {
+public class Benchmarks {
 
     public int simpleNumericTest(int n) {
         int x = n;
@@ -58,19 +58,19 @@ public class Test {
     }
 
     public static void main(String[] args) {
-        Test test = new Test();
+        Benchmarks benchmarks = new Benchmarks();
 
         // Numeric tests:
-        test.simpleNumericTest(2);
-        test.factorial(5);
-        test.gcd(3, 54);
+        benchmarks.simpleNumericTest(2);
+        benchmarks.factorial(5);
+        benchmarks.gcd(3, 54);
 
         // SLL tests:
         SLLNode head = new SLLNode(2, null);
         SLLNode temp = new SLLNode(1, null);
         SLLNode anotherTemp = new SLLNode(1, null);
-        test.simpleSLL(head, temp, anotherTemp);
-        test.findMax(head);
-        test.reverse(head);
+        benchmarks.simpleSLL(head, temp, anotherTemp);
+        benchmarks.findMax(head);
+        benchmarks.reverse(head);
     }
 }

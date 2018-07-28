@@ -1,13 +1,13 @@
-public class Test extends java.lang.Object
+public class Benchmarks extends java.lang.Object
 {
-/*Test.java*/
+/*Benchmarks.java*/
 
 /*0*/
     public void <init>()
     {
-        Test this;
+        Benchmarks this;
 
-        this := @this: Test;
+        this := @this: Benchmarks;
 /*1*/
         specialinvoke this.<java.lang.Object: void <init>()>();
 /*1*/
@@ -18,14 +18,14 @@ public class Test extends java.lang.Object
 /*3*/
     public int simpleNumericTest(int)
     {
-        Test this;
+        Benchmarks this;
         int n, x, $i0;
 
-        this := @this: Test;
+        this := @this: Benchmarks;
 /*4*/
         n := @parameter0: int;
 /*4*/
-        staticinvoke <Logger: void init(java.lang.String,boolean,boolean)>("simpleNumericTest", 1, 1);
+        staticinvoke <Logger: void init(java.lang.String,boolean,boolean)>("simpleNumericTest", 0, 1);
         x = n;
 /*4*/
 /*4*/
@@ -67,10 +67,10 @@ public class Test extends java.lang.Object
 /*10*/
     public int gcd(int, int)
     {
-        Test this;
+        Benchmarks this;
         int a, b;
 
-        this := @this: Test;
+        this := @this: Benchmarks;
 /*11*/
         a := @parameter0: int;
 /*11*/
@@ -78,7 +78,7 @@ public class Test extends java.lang.Object
 /*11*/
 
      label0:
-        staticinvoke <Logger: void init(java.lang.String,boolean,boolean)>("gcd", 1, 1);
+        staticinvoke <Logger: void init(java.lang.String,boolean,boolean)>("gcd", 0, 1);
         if a == b goto label2;
 /*11*/
 
@@ -133,14 +133,14 @@ public class Test extends java.lang.Object
 /*20*/
     public int factorial(int)
     {
-        Test this;
+        Benchmarks this;
         int x, y;
 
-        this := @this: Test;
+        this := @this: Benchmarks;
 /*21*/
         x := @parameter0: int;
 /*21*/
-        staticinvoke <Logger: void init(java.lang.String,boolean,boolean)>("factorial", 1, 1);
+        staticinvoke <Logger: void init(java.lang.String,boolean,boolean)>("factorial", 0, 1);
         y = 1;
 /*21*/
 /*21*/
@@ -191,10 +191,10 @@ public class Test extends java.lang.Object
 /*29*/
     public void simpleSLL(SLLNode, SLLNode, SLLNode)
     {
-        Test this;
+        Benchmarks this;
         SLLNode head, temp, anotherTemp;
 
-        this := @this: Test;
+        this := @this: Benchmarks;
 /*30*/
         head := @parameter0: SLLNode;
 /*30*/
@@ -202,7 +202,7 @@ public class Test extends java.lang.Object
 /*30*/
         anotherTemp := @parameter2: SLLNode;
 /*30*/
-        staticinvoke <Logger: void init(java.lang.String,boolean,boolean)>("simpleSLL", 1, 1);
+        staticinvoke <Logger: void init(java.lang.String,boolean,boolean)>("simpleSLL", 0, 1);
         head.<SLLNode: int data> = 3;
 /*30*/
         staticinvoke <Logger: void addToSpec(java.lang.String)>("[");
@@ -248,15 +248,15 @@ public class Test extends java.lang.Object
 /*36*/
     public int findMax(SLLNode)
     {
-        Test this;
+        Benchmarks this;
         SLLNode head, t;
         int max, $i0;
 
-        this := @this: Test;
+        this := @this: Benchmarks;
 /*37*/
         head := @parameter0: SLLNode;
 /*37*/
-        staticinvoke <Logger: void init(java.lang.String,boolean,boolean)>("findMax", 1, 1);
+        staticinvoke <Logger: void init(java.lang.String,boolean,boolean)>("findMax", 0, 1);
         t = head;
 /*37*/
 /*37*/
@@ -332,14 +332,14 @@ public class Test extends java.lang.Object
 /*49*/
     public SLLNode reverse(SLLNode)
     {
-        Test this;
+        Benchmarks this;
         SLLNode head, result, t;
 
-        this := @this: Test;
+        this := @this: Benchmarks;
 /*50*/
         head := @parameter0: SLLNode;
 /*50*/
-        staticinvoke <Logger: void init(java.lang.String,boolean,boolean)>("reverse", 1, 1);
+        staticinvoke <Logger: void init(java.lang.String,boolean,boolean)>("reverse", 0, 1);
         result = null;
 /*50*/
 /*50*/
@@ -411,22 +411,22 @@ public class Test extends java.lang.Object
     public static void main(java.lang.String[])
     {
         java.lang.String[] args;
-        Test $r0, test;
+        Benchmarks $r0, benchmarks;
         SLLNode head, temp, anotherTemp, $r1;
 
         args := @parameter0: java.lang.String[];
 /*61*/
-        $r0 = new Test;
+        $r0 = new Benchmarks;
 /*61*/
-        specialinvoke $r0.<Test: void <init>()>();
+        specialinvoke $r0.<Benchmarks: void <init>()>();
 /*61*/
-        test = $r0;
+        benchmarks = $r0;
 /*61*/
-        virtualinvoke test.<Test: int simpleNumericTest(int)>(2);
+        virtualinvoke benchmarks.<Benchmarks: int simpleNumericTest(int)>(2);
 /*64*/
-        virtualinvoke test.<Test: int factorial(int)>(5);
+        virtualinvoke benchmarks.<Benchmarks: int factorial(int)>(5);
 /*65*/
-        virtualinvoke test.<Test: int gcd(int,int)>(3, 54);
+        virtualinvoke benchmarks.<Benchmarks: int gcd(int,int)>(3, 54);
 /*66*/
         $r1 = new SLLNode;
 /*69*/
@@ -446,11 +446,11 @@ public class Test extends java.lang.Object
 /*71*/
         anotherTemp = $r1;
 /*71*/
-        virtualinvoke test.<Test: void simpleSLL(SLLNode,SLLNode,SLLNode)>(head, temp, anotherTemp);
+        virtualinvoke benchmarks.<Benchmarks: void simpleSLL(SLLNode,SLLNode,SLLNode)>(head, temp, anotherTemp);
 /*72*/
-        virtualinvoke test.<Test: int findMax(SLLNode)>(head);
+        virtualinvoke benchmarks.<Benchmarks: int findMax(SLLNode)>(head);
 /*73*/
-        virtualinvoke test.<Test: SLLNode reverse(SLLNode)>(head);
+        virtualinvoke benchmarks.<Benchmarks: SLLNode reverse(SLLNode)>(head);
 /*74*/
         return;
 /*75*/
