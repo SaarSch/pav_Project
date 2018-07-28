@@ -9,10 +9,12 @@ public class CodeImplant extends BodyTransformer {
     static SootClass loggerClass;
     static SootMethod init, logCmd, printIntLocal, printRefLocal, dumpSpecToFile, addToSpec;
     static boolean storeDeltas, logCommands;
+    static HashMap<Local,Boolean> initialization;
 
     public CodeImplant(boolean storeDeltas, boolean logCommands) {
         CodeImplant.storeDeltas = storeDeltas;
         CodeImplant.logCommands = logCommands;
+        CodeImplant.initialization = new HashMap<>();
     }
 
     @Override
@@ -31,15 +33,28 @@ public class CodeImplant extends BodyTransformer {
         List<Local> locals = getLocals(body);
         int argCount = body.getMethod().getParameterCount();
         int localCount = body.getLocalCount()-1; // without counting 'this'
+        for (int i = 0; i < localCount; i++) {
+            initialization.put(locals.get(i), false);
+            if (i >= localCount - argCount) // the arguments are initialized
+                initialization.put(locals.get(i), true);
+        }
         List<Local> methodArgs = locals.subList(localCount - argCount, localCount);
         PatchingChain<Unit> stms = body.getUnits();
         ArrayList<Unit> myStms = generateMyStms(stms);
 
         for (Unit stm : myStms) {
-            // Print locals
-            printLocals(locals, stms, stm, true);
-            // Log command
-            addInvokeStmt(stms, stm, logCmd.makeRef(), false, StringConstant.v(stm.toString()));
+            if (!(stm instanceof IfStmt)) { // do not print if statements
+                if (stm instanceof AssignStmt) {
+                    Value leftOp = ((AssignStmt) stm).getLeftOp();
+                    if (leftOp instanceof Local)
+                        if (initialization.containsKey(leftOp))
+                            initialization.put((Local)leftOp, true);
+                }
+                // Print locals
+                printLocals(locals, stms, stm, true);
+                // Log command
+                addInvokeStmt(stms, stm, logCmd.makeRef(), false, StringConstant.v(stm.toString()));
+            }
         }
 
         // Init logger
@@ -54,14 +69,18 @@ public class CodeImplant extends BodyTransformer {
         addInvokeStmt(stms, stm, addToSpec.makeRef(), false, StringConstant.v(" ]"));
 
         for (Local local : locals) {
-            SootMethodRef printLocalMethod = null;
-            if (local.getType().getClass().getName().equals("soot.IntType") ||
-                    local.getType().getClass().getName().equals("soot.ByteType")) {
-                printLocalMethod = printIntLocal.makeRef();
-            } else if (local.getType().getClass().getName().equals("soot.RefType")) {
-                printLocalMethod = printRefLocal.makeRef();
+            if (initialization.containsKey(local) && initialization.get(local)) {
+                if (!local.getName().startsWith("$")) {
+                    SootMethodRef printLocalMethod = null;
+                    if ((local.getType() instanceof IntType) ||
+                        (local.getType() instanceof ByteType)) {
+                        printLocalMethod = printIntLocal.makeRef();
+                    } else if (local.getType() instanceof RefType) {
+                        printLocalMethod = printRefLocal.makeRef();
+                    }
+                    addInvokeStmt(stms, stm, printLocalMethod, false, local, StringConstant.v("#LOCAL#_" + local.getName()));
+                }
             }
-            addInvokeStmt(stms, stm, printLocalMethod, false, local, StringConstant.v("#LOCAL#_" + local.getName()));
         }
 
         addInvokeStmt(stms, stm, addToSpec.makeRef(), false, StringConstant.v(asComment? " // [":"["));
@@ -86,7 +105,8 @@ public class CodeImplant extends BodyTransformer {
         ArrayList<Unit> ans = new ArrayList<>(stms);
         int numOfStmToRemove = 0;
         Unit currentStm = stms.getFirst();
-        while (currentStm.getUseAndDefBoxes().get(1).toString().contains("@")) {
+        while (currentStm.getUseAndDefBoxes().size() >= 2 &&
+                currentStm.getUseAndDefBoxes().get(1).toString().contains("@")) {
             numOfStmToRemove++;
             currentStm = stms.getSuccOf(currentStm);
         }

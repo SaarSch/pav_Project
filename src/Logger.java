@@ -117,6 +117,6 @@ public class Logger {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        initialized = false;
+        Logger.initialized = false;
     }
 }

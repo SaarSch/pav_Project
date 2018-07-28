@@ -1,16 +1,10 @@
 public class Test {
 
-    public void simpleSLL(SLLNode head, SLLNode temp, SLLNode anotherTemp) {
-        head.data = 3;
-        head.next = temp;
-        head.data = 4;
-        anotherTemp.data = 5;
-    }
-
-    public void simpleNumericTest(int num) {
-        int temp = num;
-        num = temp;
-        num++;
+    public int simpleNumericTest(int n) {
+        int x = n;
+        x++;
+        x = x/3;
+        return n+x;
     }
 
     public int gcd(int a, int b) {
@@ -32,7 +26,14 @@ public class Test {
         return y;
     }
 
-    /*public int findMax(SLLNode head) {
+    public void simpleSLL(SLLNode head, SLLNode temp, SLLNode anotherTemp) {
+        head.data = 3;
+        head.next = temp;
+        head.data = 9;
+        anotherTemp.data = 5;
+    }
+
+    public int findMax(SLLNode head) {
         SLLNode t = head;
         int max = head.data;
         while (t != null) {
@@ -41,21 +42,35 @@ public class Test {
             t = t.next;
         }
         return max;
-    }*/
+    }
+
+    public SLLNode reverse(SLLNode head) {
+        SLLNode t, result;
+        // The target code.
+        result = null;
+        while (head != null) {
+            t = head.next;
+            head.next = result;
+            result = head;
+            head = t;
+        }
+        return result;
+    }
 
     public static void main(String[] args) {
         Test test = new Test();
 
         // Numeric tests:
         test.simpleNumericTest(2);
-        int fact = test.factorial(5);
-        int gcd = test.gcd(3, 54);
+        test.factorial(5);
+        test.gcd(3, 54);
 
         // SLL tests:
         SLLNode head = new SLLNode(2, null);
         SLLNode temp = new SLLNode(1, null);
         SLLNode anotherTemp = new SLLNode(1, null);
         test.simpleSLL(head, temp, anotherTemp);
-        //int max = test.findMax(head);
+        test.findMax(head);
+        test.reverse(head);
     }
 }
