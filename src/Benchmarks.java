@@ -8,13 +8,15 @@ public class Benchmarks {
     }
 
     public int gcd(int a, int b) {
+        int res;
         while (a != b) {
             if (a > b)
                 a = a - b;
             else
                 b = b - a;
         }
-        return a;
+        res = a;
+        return res;
     }
 
     public int factorial(int x) {
@@ -26,11 +28,11 @@ public class Benchmarks {
         return y;
     }
 
-    public void simpleSLL(SLLNode head, SLLNode temp, SLLNode anotherTemp) {
+    public void simpleSLL(SLLNode head, SLLNode temp, SLLNode temp2) {
         head.data = 3;
         head.next = temp;
         head.data = 9;
-        anotherTemp.data = 5;
+        temp2.data = 5;
     }
 
     public int findMax(SLLNode head) {
@@ -61,16 +63,21 @@ public class Benchmarks {
         Benchmarks benchmarks = new Benchmarks();
 
         // Numeric tests:
-        benchmarks.simpleNumericTest(2);
         benchmarks.factorial(5);
+        benchmarks.factorial(3);
+        benchmarks.factorial(2);
+
+        //benchmarks.simpleNumericTest(2);
         benchmarks.gcd(3, 54);
 
         // SLL tests:
+
         SLLNode head = new SLLNode(2, null);
         SLLNode temp = new SLLNode(1, null);
-        SLLNode anotherTemp = new SLLNode(1, null);
-        benchmarks.simpleSLL(head, temp, anotherTemp);
-        benchmarks.findMax(head);
-        benchmarks.reverse(head);
+        SLLNode temp2 = new SLLNode(1, temp);
+        //temp.next = temp2;
+        benchmarks.simpleSLL(head, temp, temp2);
+        benchmarks.findMax(head); // Note: this would get into an infinite loop if there's a cycle in the SLL, like above
+        //benchmarks.reverse(head); // Same as above
     }
 }

@@ -1,50 +1,54 @@
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class Logger {
     private static StringBuilder str = new StringBuilder();
     private static HashMap<String, StringBuilder> localNameToStr = new HashMap<>();
+    private static HashSet<Object> printedObjects = new HashSet<>();
     private static StringBuilder currentLocalStr = new StringBuilder();
     private static String currentLocalName = "";
-    private static boolean storeDeltas = false, logCommands = true, initialized = false;
-    private static String separator = " &&";
+    private static boolean storeDeltas = false, logCommands = true;
+    private static String separator = " && ";
+    private static String functionSignature = "";
 
     public static void addToSpec(String s) {
-        if (s.equals(" ]")) {
+        if (s.equals("]")) {
             handleNewLocals("", true);
         }
         str.append(s);
     }
 
-    public static void init(String functionName, boolean storeDeltas, boolean logCommands) {
-        if (!Logger.initialized) {
-            addToSpec("\n\n*** Method: " + functionName + " ***\n");
-            Logger.storeDeltas = storeDeltas;
-            Logger.logCommands = logCommands;
-            Logger.initialized = true;
-            clearVars();
-        }
+    public static void init(String functionSignature, boolean storeDeltas, boolean logCommands) {
+        Logger.functionSignature = functionSignature;
+        Logger.storeDeltas = storeDeltas;
+        Logger.logCommands = logCommands;
+        clearVars();
     }
 
     public static void logCmd(String cmd) {
-        if (logCommands) {
-            addToSpec("\n" + cmd + ";");
-        }
+        addToSpec("\n    ");
+        if (logCommands)
+            addToSpec("-> " + cmd + ";");
     }
 
     public static void printLocal(int localValue, String localName) {
         handleNewLocals(localName, false);
-        currentLocalStr.append(" " + localName + " = " + localValue);
+        currentLocalStr.append(localName + "==" + localValue);
     }
 
-    public static void printLocal(Object localValue, String localName) {
+    public static void printLocal(Object localValue, String localName, boolean inRecursion) {
+        if (inRecursion && printedObjects.contains(localValue)) // Cycle detected
+            return;
+
+        printedObjects.add(localValue);
         handleNewLocals(localName, false);
         if (null == localValue) {
-            currentLocalStr.append(" " + localName + " = " + "null");
+            currentLocalStr.append(localName + "==" + "null");
             return;
         }
-        currentLocalStr.append(" " + localName + " = " + localValue);
+        currentLocalStr.append(localName + "==" + localValue);
         Field fields[] = localValue.getClass().getDeclaredFields();
         for (Field field : fields) {
             try {
@@ -54,12 +58,14 @@ public class Logger {
                     int intValue = (int) field.get(localValue);
                     printLocal(intValue, localName + "." + fieldName);
                 } else {
-                    printLocal(field.get(localValue), localName + "." + fieldName);
+                    printedObjects.add(localValue);
+                    printLocal(field.get(localValue), localName + "." + fieldName, true);
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
+        printedObjects.clear();
     }
 
     private static void addToSpec(StringBuilder s) {
@@ -85,7 +91,6 @@ public class Logger {
     private static boolean equalsLocalStrings(String str1, String str2) {
         str1 = str1.replace(separator, "");
         str2 = str2.replace(separator, "");
-        //System.out.println("Comparing |" + str1 + "| and |" + str2 + "|");
         return str1.equals(str2);
     }
 
@@ -98,7 +103,6 @@ public class Logger {
             addToSpec(currentLocalStr);
         }
         if (!currentLocalName.equals("")) {
-            //System.out.println("Adding to map: " + currentLocalName + ":" + currentLocalStr.toString());
             localNameToStr.put(currentLocalName, currentLocalStr); // record previous state
         }
         currentLocalStr = new StringBuilder();
@@ -110,13 +114,13 @@ public class Logger {
         try {
             writer = new PrintWriter(fileName + ".spec", "UTF-8");
             String stringToWrite = str.toString();
-            while (stringToWrite.contains(separator + " ]"))
-                stringToWrite = stringToWrite.replace(separator + " ]", " ]");
-            writer.println(stringToWrite);
+            while (stringToWrite.contains(separator + "]"))
+                stringToWrite = stringToWrite.replace(separator + "]", "]");
+            writer.println(functionSignature + " {\n  " + stringToWrite + "}");
             writer.close();
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println(e.getMessage());
         }
-        Logger.initialized = false;
     }
 }
