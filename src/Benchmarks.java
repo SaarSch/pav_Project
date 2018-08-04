@@ -78,6 +78,6 @@ public class Benchmarks {
         //temp.next = temp2;
         benchmarks.simpleSLL(head, temp, temp2);
         benchmarks.findMax(head); // Note: this would get into an infinite loop if there's a cycle in the SLL, like above
-        //benchmarks.reverse(head); // Same as above
+        benchmarks.reverse(head); // Same as above
     }
 }

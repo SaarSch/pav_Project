@@ -26,8 +26,7 @@ public class CodeImplant extends BodyTransformer {
         if (methodName.equals("main")) {
             List<Unit> methodCalls = new ArrayList<>();
             for (Unit stm : body.getUnits())
-                if (stm.toString().contains(instrumentedMethod))
-                    methodCalls.add(stm);
+                if (stm.toString().contains(instrumentedMethod)) methodCalls.add(stm);
             for (Unit stm : methodCalls) {
                 addInvokeStmt(body.getUnits(), stm, addToSpec.makeRef(), true, StringConstant.v("\n  example {\n    "));
                 addInvokeStmt(body.getUnits(), stm, addToSpec.makeRef(), false, StringConstant.v("\n  }\n"));
@@ -36,8 +35,7 @@ public class CodeImplant extends BodyTransformer {
             addInvokeStmt(body.getUnits(), body.getUnits().getLast(), dumpSpecToFile.makeRef(), true, StringConstant.v("Test_Result"));
             return;
         }
-        if (!methodName.equals(instrumentedMethod)||
-             methodName.equals("<init>") || methodName.equals("<clinit>")) {
+        if (!methodName.equals(instrumentedMethod) || methodName.equals("<init>") || methodName.equals("<clinit>")) {
             return;
         }
 
@@ -76,15 +74,15 @@ public class CodeImplant extends BodyTransformer {
         }
 
         List<String> argumentNames = new ArrayList<>();
-        for (int i=localCount - argCount; i<localCount; i++)
+        for (int i = localCount - argCount; i < localCount; i++)
             argumentNames.add(locals.get(i).getName());
-        String signature = getSignature(body.getMethod(), body.getUnits().getLast(), argumentNames);
+        String signature = getSignature(body.getMethod(), body.getUnits().getLast(), argumentNames, locals);
         // Init logger
         Unit LoggerInitStmt = addInvokeStmt(stms, myStms.get(0), init.makeRef(), true, StringConstant.v(signature), IntConstant.v(storeDeltas ? 1 : 0), IntConstant.v(logCommands ? 1 : 0));
 
         for (Unit stm : stms) {
             if (stm instanceof GotoStmt) {
-                Unit target = ((GotoStmt)stm).getTarget();
+                Unit target = ((GotoStmt) stm).getTarget();
                 if (target instanceof JInvokeStmt)
                     if (target.toString().contains("init")) // Prevent a loop that goes back to init instead of the real first statement
                         ((GotoStmt) stm).setTarget(myStms.get(0));
@@ -95,23 +93,46 @@ public class CodeImplant extends BodyTransformer {
 
     }
 
-    private String getSignature(SootMethod method, Unit returnStmt, List<String> argumentNames) {
+    private String getSignature(SootMethod method, Unit returnStmt, List<String> argumentNames, List<Local> locals) {
         ReturnStmt castedReturnStmt = null;
-        if (returnStmt instanceof  ReturnStmt)
-            castedReturnStmt = (ReturnStmt)returnStmt;
+        if (returnStmt instanceof ReturnStmt) castedReturnStmt = (ReturnStmt) returnStmt;
         String res = "";
-        res += method.getName() + "(";
-        for (int i=0; i<method.getParameterCount() && i<argumentNames.size(); i++) {
-            res += "mut " + argumentNames.get(argumentNames.size()-1-i) + ":" + method.getParameterType(i) + ", ";
+        Set<Type> typeList = new HashSet<>();
+        for (Local l : locals) {
+            typeList.add(l.getType());
         }
-        res = res.substring(0, res.length()-2);
+        res += generateAllClassDefinitions(typeList);
+        res += method.getName() + "(";
+        for (int i = 0; i < method.getParameterCount() && i < argumentNames.size(); i++) {
+            res += "mut " + argumentNames.get(argumentNames.size() - 1 - i) + ":" + method.getParameterType(i) + ", ";
+        }
+        res = res.substring(0, res.length() - 2);
         res += ") -> (";
+        Local returnedLocal = null;
         if (castedReturnStmt != null) {
-            Local returnedLocal = (Local)castedReturnStmt.getOp();
+            returnedLocal = (Local) castedReturnStmt.getOp();
             res += (returnedLocal.getName() + ":" + returnedLocal.getType());
         }
         res += ")";
+        res += addLocalsDecleration(locals, returnedLocal.getName(), argumentNames);
         return res;
+    }
+
+    private String addLocalsDecleration(List<Local> locals, String returnedVar, List<String> argumentNames) {
+        HashMap<String, Type> localNameToType = new HashMap();
+        for (Local l : locals) {
+            if (argumentNames.contains(l.getName())) {
+                localNameToType.put(l.getName(), l.getType());
+            }
+        }
+        StringBuilder s = new StringBuilder();
+        s.append(") {\n");
+        for (Map.Entry<String, Type> l : localNameToType.entrySet()) {
+            if (!l.getKey().equals(returnedVar)) { // the returned variable is already declared!
+                s.append("  var " + l.getKey() + ":" + l.getValue() + "\n");
+            }
+        }
+        return s.toString();
     }
 
     private void printLocals(List<Local> locals, PatchingChain<Unit> stms, Unit stm, boolean asComment) {
@@ -161,6 +182,35 @@ public class CodeImplant extends BodyTransformer {
         }
         ans.remove(ans.size() - 1);
         return ans;
+    }
+
+    private String generateClassDefinition(Type t, Set handled) {
+        StringBuilder result = new StringBuilder();
+        StringBuilder currDef = new StringBuilder();
+        if (!t.toString().equals("int") && !handled.contains(t)) {
+            RefType curr = (RefType) t;
+            handled.add(t);
+            currDef.append("type " + t + " {\n");
+            Chain<SootField> fields = curr.getSootClass().getFields();
+            for (SootField f : fields) {
+                currDef.append("  " + f.getName() + ":" + f.getType() + "\n");
+                String fieldDefs = generateClassDefinition(f.getType(), handled);
+                result.append(fieldDefs);
+            }
+            currDef.append("}\n\n");
+            result.append(currDef.toString());
+        }
+        return result.toString();
+    }
+
+    private String generateAllClassDefinitions(Set<Type> types) {
+        StringBuilder result = new StringBuilder();
+
+        for (Type t : types) {
+            result.append(generateClassDefinition(t, new HashSet<String>()));
+        }
+
+        return result.toString();
     }
 }
 
