@@ -114,22 +114,22 @@ public class CodeImplant extends BodyTransformer {
             res += (returnedLocal.getName() + ":" + returnedLocal.getType());
         }
         res += ")";
-        res += addLocalsDecleration(locals, returnedLocal.getName(), argumentNames);
+        res += " {\n  ";
+        res += addLocalsDeclaration(locals, returnedLocal.getName(), argumentNames);
         return res;
     }
 
-    private String addLocalsDecleration(List<Local> locals, String returnedVar, List<String> argumentNames) {
+    private String addLocalsDeclaration(List<Local> locals, String returnedVar, List<String> argumentNames) {
         HashMap<String, Type> localNameToType = new HashMap();
         for (Local l : locals) {
-            if (argumentNames.contains(l.getName())) {
+            if (!argumentNames.contains(l.getName())) {
                 localNameToType.put(l.getName(), l.getType());
             }
         }
         StringBuilder s = new StringBuilder();
-        s.append(") {\n");
         for (Map.Entry<String, Type> l : localNameToType.entrySet()) {
             if (!l.getKey().equals(returnedVar)) { // the returned variable is already declared!
-                s.append("  var " + l.getKey() + ":" + l.getValue() + "\n");
+                s.append("var " + l.getKey() + ":" + l.getValue() + "\n");
             }
         }
         return s.toString();
@@ -187,7 +187,7 @@ public class CodeImplant extends BodyTransformer {
     private String generateClassDefinition(Type t, Set handled) {
         StringBuilder result = new StringBuilder();
         StringBuilder currDef = new StringBuilder();
-        if (!t.toString().equals("int") && !handled.contains(t)) {
+        if (!(t instanceof IntType || t instanceof ByteType) && !handled.contains(t)) {
             RefType curr = (RefType) t;
             handled.add(t);
             currDef.append("type " + t + " {\n");

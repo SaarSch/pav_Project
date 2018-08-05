@@ -116,7 +116,7 @@ public class Logger {
             String stringToWrite = str.toString();
             while (stringToWrite.contains(separator + "]"))
                 stringToWrite = stringToWrite.replace(separator + "]", "]");
-            writer.println(functionSignature + " {\n  " + stringToWrite + "}");
+            writer.println(functionSignature + stringToWrite + "}");
             writer.close();
         } catch (Exception e) {
             e.printStackTrace();
