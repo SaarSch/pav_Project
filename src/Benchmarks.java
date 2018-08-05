@@ -67,7 +67,7 @@ public class Benchmarks {
         benchmarks.factorial(3);
         benchmarks.factorial(2);
 
-        //benchmarks.simpleNumericTest(2);
+        benchmarks.simpleNumericTest(2);
         benchmarks.gcd(3, 54);
 
         // SLL tests:

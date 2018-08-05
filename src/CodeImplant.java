@@ -32,7 +32,7 @@ public class CodeImplant extends BodyTransformer {
                 addInvokeStmt(body.getUnits(), stm, addToSpec.makeRef(), false, StringConstant.v("\n  }\n"));
             }
             // Write to file
-            addInvokeStmt(body.getUnits(), body.getUnits().getLast(), dumpSpecToFile.makeRef(), true, StringConstant.v("Test_Result"));
+            addInvokeStmt(body.getUnits(), body.getUnits().getLast(), dumpSpecToFile.makeRef(), true, StringConstant.v(instrumentedMethod));
             return;
         }
         if (!methodName.equals(instrumentedMethod) || methodName.equals("<init>") || methodName.equals("<clinit>")) {
@@ -109,13 +109,15 @@ public class CodeImplant extends BodyTransformer {
         res = res.substring(0, res.length() - 2);
         res += ") -> (";
         Local returnedLocal = null;
+        String returnedLocalName = "";
         if (castedReturnStmt != null) {
             returnedLocal = (Local) castedReturnStmt.getOp();
-            res += (returnedLocal.getName() + ":" + returnedLocal.getType());
+            returnedLocalName = returnedLocal.getName().replace("$", "");
+            res += (returnedLocalName + ":" + returnedLocal.getType());
         }
         res += ")";
         res += " {\n  ";
-        res += addLocalsDeclaration(locals, returnedLocal.getName(), argumentNames);
+        res += addLocalsDeclaration(locals, returnedLocalName, argumentNames);
         return res;
     }
 
@@ -123,13 +125,20 @@ public class CodeImplant extends BodyTransformer {
         HashMap<String, Type> localNameToType = new HashMap();
         for (Local l : locals) {
             if (!argumentNames.contains(l.getName())) {
-                localNameToType.put(l.getName(), l.getType());
+                String name;
+                if (l.getName().contains("$"))
+                    name = l.getName().replace("$","");
+                else
+                    name = l.getName();
+                localNameToType.put(name, l.getType());
             }
         }
         StringBuilder s = new StringBuilder();
+        boolean isFirst = true;
         for (Map.Entry<String, Type> l : localNameToType.entrySet()) {
             if (!l.getKey().equals(returnedVar)) { // the returned variable is already declared!
-                s.append("var " + l.getKey() + ":" + l.getValue() + "\n");
+                s.append((isFirst? "":"  ") + "var " + l.getKey() + ":" + l.getValue() + "\n");
+                isFirst = false;
             }
         }
         return s.toString();

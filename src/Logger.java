@@ -29,13 +29,20 @@ public class Logger {
 
     public static void logCmd(String cmd) {
         addToSpec("\n    ");
-        if (logCommands)
+        if (logCommands) {
+            while (cmd.contains(".<")) {
+                int fieldStartIndex = cmd.substring(cmd.indexOf('<'), cmd.indexOf('>')).lastIndexOf(' ') + cmd.indexOf('<') + 1;
+                String field = cmd.substring(fieldStartIndex, cmd.indexOf('>'));
+                cmd = cmd.substring(0, cmd.indexOf(".<")) + "." + field + cmd.substring(cmd.indexOf('>')+1);
+            }
+            cmd = cmd.replace("$", "");
             addToSpec("-> " + cmd + ";");
+        }
     }
 
     public static void printLocal(int localValue, String localName) {
         handleNewLocals(localName, false);
-        currentLocalStr.append(localName + "==" + localValue);
+        currentLocalStr.append(localName.replace("@", "") + "==" + localValue);
     }
 
     public static void printLocal(Object localValue, String localName, boolean inRecursion) {
@@ -45,21 +52,24 @@ public class Logger {
         printedObjects.add(localValue);
         handleNewLocals(localName, false);
         if (null == localValue) {
-            currentLocalStr.append(localName + "==" + "null");
+            currentLocalStr.append(localName.replace("@", "") + "==" + "null");
             return;
         }
-        currentLocalStr.append(localName + "==" + localValue);
+        currentLocalStr.append(localName.replace("@", "") +
+                "==" +
+                localValue.toString().replace("@", ""));
         Field fields[] = localValue.getClass().getDeclaredFields();
         for (Field field : fields) {
             try {
                 String fieldType = field.getType().toString();
                 String fieldName = field.getName();
-                if (fieldType.equals("int")) {
+                String objectName = (localName.contains("#LOCAL#_")? "#LOCAL#_":"") + localValue;
+                if (fieldType.equals("int") || fieldType.equals("byte")) {
                     int intValue = (int) field.get(localValue);
-                    printLocal(intValue, localName + "." + fieldName);
+                    printLocal(intValue, objectName + "." + fieldName);
                 } else {
                     printedObjects.add(localValue);
-                    printLocal(field.get(localValue), localName + "." + fieldName, true);
+                    printLocal(field.get(localValue), objectName + "." + fieldName, true);
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
